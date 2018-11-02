@@ -21,10 +21,12 @@ const LaunchHandler = {
         if(!ACCESS_TOKEN && !accessToken) {
           return handlerInput.responseBuilder
             .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .reprompt(requestAttributes.t('ACCOUNT_LINKING'))
             .getResponse();
         } else {
           return handlerInput.responseBuilder
           .speak(requestAttributes.t('WELCOME_MESSAGE'))
+          .reprompt(requestAttributes.t('WELCOME_MESSAGE'))
           .getResponse();
         }
   },
@@ -61,7 +63,7 @@ const YesIntent = {
         && request.intent.name === 'YesIntent'
         && handlerInput.attributesManager.getSessionAttributes().isYesOrNo;
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const request = handlerInput.requestEnvelope.request;
@@ -84,7 +86,7 @@ const NoIntent = {
         && request.intent.name === 'NoIntent'
         && handlerInput.attributesManager.getSessionAttributes().isYesOrNo;
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const request = handlerInput.requestEnvelope.request;
@@ -152,6 +154,7 @@ const SendTipIntent = {
           console.log("ask if this is the user!");
           return handlerInput.responseBuilder
                   .speak(requestAttributes.t('IS_THIS_USER', user_slot.value))
+                  .reprompt(requestAttributes.t('IS_THIS_USER', user_slot.value))
                   .getResponse();
         } else {
           return handlerInput.responseBuilder
