@@ -27,10 +27,5 @@
     "i18next-sprintf-postprocessor": "^0.2.2",
     "node-fetch": "^2.2.0"
   },
-  "devDependencies": {
-    "@types/i18next-sprintf-postprocessor": "0.0.29",
-    "@types/node": "^10.12.1",
-    "@types/node-fetch": "^2.1.2",
-    "typescript": "^2.9.2"
-  }
+  "devDependencies": {}
 }

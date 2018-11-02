@@ -1,0 +1,144 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "xrp tip bot",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetBalanceIntent",
+                    "slots": [],
+                    "samples": [
+                        "Wie viele XRP habe ich",
+                        "Was ist mein XRP Tip Bot Kontostand",
+                        "Was ist mein Kontostand"
+                    ]
+                },
+                {
+                    "name": "SendTipIntent",
+                    "slots": [
+                        {
+                            "name": "amount",
+                            "type": "AMAZON.NUMBER",
+                            "samples": [
+                                "sende {amount} XRP",
+                                "Ich will {amount} XRP Senden",
+                                "{amount}"
+                            ]
+                        },
+                        {
+                            "name": "user_name",
+                            "type": "user_name",
+                            "samples": [
+                                "{user_name} soll die XRP bekommen",
+                                "Ich will die XRP an {user_name} senden",
+                                "{user_name}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "Ich will {amount} XRP an {user_name} senden",
+                        "Sende {user_name} {amount} XRP",
+                        "Gib {user_name} {amount} XRP",
+                        "Sende {amount} XRP an {user_name} "
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "user_name",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "WietseWind"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "nixerFFM"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "SendTipIntent",
+                    "confirmationRequired": true,
+                    "prompts": {
+                        "confirmation": "Confirm.Intent.1147457407572"
+                    },
+                    "slots": [
+                        {
+                            "name": "amount",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1383734608336.92403613675"
+                            }
+                        },
+                        {
+                            "name": "user_name",
+                            "type": "user_name",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.213838131317.1374394456518"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.213838131317.1374394456518",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "An wen willst du die XRP senden?"
+                    },
+                    {
+                        "type": "PlainText",
+                        "value": "Wer soll die XRP bekommen?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1383734608336.92403613675",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Wie viele XRP möchtest du senden?"
+                    }
+                ]
+            },
+            {
+                "id": "Confirm.Intent.1147457407572",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Du moechtest {amount} XRP an den User {user_name} senden?"
+                    }
+                ]
+            }
+        ]
+    }
+}
