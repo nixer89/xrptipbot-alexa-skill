@@ -86,17 +86,16 @@
             "intents": [
                 {
                     "name": "SendTipIntent",
-                    "confirmationRequired": true,
-                    "prompts": {
-                        "confirmation": "Confirm.Intent.674533691845"
-                    },
+                    "confirmationRequired": false,
+                    "prompts": {},
                     "slots": [
                         {
                             "name": "xrp",
                             "type": "AMAZON.NUMBER",
-                            "confirmationRequired": false,
+                            "confirmationRequired": true,
                             "elicitationRequired": true,
                             "prompts": {
+                                "confirmation": "Confirm.Slot.411127291159.854599265297",
                                 "elicitation": "Elicit.Slot.73790648461.514448116770"
                             }
                         },
@@ -138,6 +137,15 @@
                     {
                         "type": "PlainText",
                         "value": "You want to send {xrp} XRP to user {user_name} ?"
+                    }
+                ]
+            },
+            {
+                "id": "Confirm.Slot.411127291159.854599265297",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "You want to send {xrp} XRP?"
                     }
                 ]
             }

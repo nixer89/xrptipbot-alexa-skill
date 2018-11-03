@@ -54,6 +54,9 @@
                         }
                     ],
                     "samples": [
+                        "sende XRP an {user_name}",
+                        "sende {xrp} XRP",
+                        "sende XRP",
                         "Ich will {xrp} XRP an {user_name} senden",
                         "Sende {user_name} {xrp} XRP",
                         "Gib {user_name} {xrp} XRP",
@@ -91,10 +94,8 @@
             "intents": [
                 {
                     "name": "SendTipIntent",
-                    "confirmationRequired": true,
-                    "prompts": {
-                        "confirmation": "Confirm.Intent.317937471527"
-                    },
+                    "confirmationRequired": false,
+                    "prompts": {},
                     "slots": [
                         {
                             "name": "xrp",
