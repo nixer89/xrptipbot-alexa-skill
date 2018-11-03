@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "xrp tip bot",
+            "invocationName": "tip bot",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -32,11 +32,11 @@
                     "name": "SendTipIntent",
                     "slots": [
                         {
-                            "name": "amount",
+                            "name": "xrp",
                             "type": "AMAZON.NUMBER",
                             "samples": [
-                                "I want to send {amount}",
-                                "{amount}"
+                                "I want to send {xrp}",
+                                "{xrp}"
                             ]
                         },
                         {
@@ -50,10 +50,18 @@
                         }
                     ],
                     "samples": [
-                        "Send {user_name} {amount} XRP",
-                        "Give {user_name} {amount} XRP",
-                        "Send {amount} XRP to {user_name} "
+                        "Send {user_name} {xrp} XRP",
+                        "Give {user_name} {xrp} XRP",
+                        "Send {xrp} XRP to {user_name} "
                     ]
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
                 }
             ],
             "types": [
@@ -84,7 +92,7 @@
                     },
                     "slots": [
                         {
-                            "name": "amount",
+                            "name": "xrp",
                             "type": "AMAZON.NUMBER",
                             "confirmationRequired": false,
                             "elicitationRequired": true,
@@ -129,7 +137,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "You want to send {amount} XRP to user {user_name} ?"
+                        "value": "You want to send {xrp} XRP to user {user_name} ?"
                     }
                 ]
             }

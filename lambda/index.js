@@ -60,7 +60,7 @@ const YesIntent = {
     const request = handlerInput.requestEnvelope.request;
     // checks request type
     return request.type === 'IntentRequest'
-        && request.intent.name === 'YesIntent'
+        && request.intent.name === 'AMAZON.YesIntent'
         && handlerInput.attributesManager.getSessionAttributes().isYesOrNo;
   },
   handle(handlerInput) {
@@ -83,7 +83,7 @@ const NoIntent = {
     const request = handlerInput.requestEnvelope.request;
     // checks request type
     return request.type === 'IntentRequest'
-        && request.intent.name === 'NoIntent'
+        && request.intent.name === 'AMAZON.NoIntent'
         && handlerInput.attributesManager.getSessionAttributes().isYesOrNo;
   },
   handle(handlerInput) {
@@ -99,7 +99,69 @@ const NoIntent = {
     console.log("attributes in NoIntent: " + JSON.stringify(attributes));
     console.log("forwarding to SendTipIntent");
     
-    this.SendTipIntent.handle(handlerInput);
+    if(attributes.possibleUsers.length > 0) {
+      console.log("setting user: " + attributes.possibleUsers[0]);
+      attributes.isYesOrNo = true;
+      console.log("attributes: " + JSON.stringify(attributes));
+      console.log("user_slot: " + JSON.stringify(user_slot));
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+
+      console.log("ask if this is the user!");
+      return handlerInput.responseBuilder
+              .speak(requestAttributes.t('IS_THIS_USER', user_slot.value))
+              .reprompt(requestAttributes.t('IS_THIS_USER', user_slot.value))
+              .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(requestAttributes.t('NO_MORE_USERS'))
+        .getResponse();
+    }
+  }
+}
+
+function checkForNextUser(handlerInput) {
+  const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+  const attributes = handlerInput.attributesManager.getSessionAttributes();
+  
+  if(attributes.possibleUsers && attributes.possibleUsers.length > 0) {
+    console.log("setting user: " + attributes.possibleUsers[0]);
+    attributes.isYesOrNo = true;
+    console.log("attributes: " + JSON.stringify(attributes));
+
+    console.log("ask if this is the user!");
+    return handlerInput.responseBuilder
+            .speak(requestAttributes.t('IS_THIS_USER', attributes.possibleUsers[0][0], attributes.possibleUsers[0][1]))
+            .reprompt(requestAttributes.t('IS_THIS_USER', attributes.possibleUsers[0][0], attributes.possibleUsers[0][1]))
+            .getResponse();
+  } else {
+    return handlerInput.responseBuilder
+      .speak(requestAttributes.t('NO_MORE_USERS'))
+      .getResponse();
+  }
+}
+
+function sendTipViaTipBot(handlerInput) {
+  const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+  const attributes = handlerInput.attributesManager.getSessionAttributes();
+  try {
+    var user = attributes.possibleUsers[0];
+    var amount = attributes.amountToTip;
+    if(user && amount) {
+      //found single user -> repromt to send
+      if(amount < 0.1) { //make sure to not send too much in testing! 
+        await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": ACCESS_TOKEN, "amount": amount, "to":"xrptipbot://"+user.network+"/"+user.username})});
+
+        return handlerInput.responseBuilder
+          .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, userinfo.data[0].username))
+          .getResponse();
+      } else {
+        return handlerInput.responseBuilder
+          .speak(requestAttributes.t('TIP_TOO_HIGH', amount, userinfo.data[0].username))
+          .getResponse();
+      }
+    }
+  } catch(err) {
+
   }
 }
 
@@ -117,11 +179,22 @@ const SendTipIntent = {
     const request = handlerInput.requestEnvelope.request;
     const currentIntent = request.intent;
 
-    console.log("slots: " + JSON.stringify(handlerInput.requestEnvelope.request.intent.slots));
+    console.log("request: " + JSON.stringify(handlerInput.requestEnvelope.request));
     var amount_slot = handlerInput.requestEnvelope.request.intent.slots.xrp;
     var user_slot = handlerInput.requestEnvelope.request.intent.slots.user_name;
     console.log("amount: " + amount_slot.value);
     console.log("user: " + user_slot.value);
+
+    //make sure to collect to amount first!
+    if(!amount_slot || !amount_slot.value || amount_slot.confirmationStatus !== "CONFIRMED") {
+      return handlerInput.responseBuilder
+                .addDelegateDirective(currentIntent)
+                .getResponse();
+    }
+    else {
+      attributes.amountToTip = amount_slot.value;
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+    }
 
     //did not understand any user name -> reprompt user name!
     if(user_slot && !user_slot.value) {
@@ -133,33 +206,20 @@ const SendTipIntent = {
     if(user_slot.confirmationStatus !== "CONFIRMED") {
       try {
         if(!attributes.possibleUsers) {
-            attributes.possibleUsers = [];
             let userinfo = await invokeBackend(BASE_URL+"/action:lookup/", {method: "POST", body: JSON.stringify({token: ACCESS_TOKEN, query: user_slot.value})});
             console.log("userinfo: " + JSON.stringify(userinfo));
-            if(userinfo && !userinfo.error) {
-              userinfo.data.forEach(user => attributes.possibleUsers.push(user.username));
+            if(userinfo && !userinfo.error && userinfo.data.length >0) {
+              attributes.possibleUsers = userInfo.data;
             }
-
+            else {
+              return handlerInput.responseBuilder
+                .speak(requestAttributes.t('NO_USER_FOUND'))
+                .getResponse();
+            }
             console.log("possible users: " + JSON.stringify(attributes.possibleUsers));
-        }
+            handlerInput.attributesManager.setSessionAttributes(attributes);
 
-        if(attributes.possibleUsers.length > 0) {
-          console.log("setting user: " + attributes.possibleUsers[0]);
-          user_slot.value = attributes.possibleUsers[0];
-          attributes.isYesOrNo = true;
-          console.log("attributes: " + JSON.stringify(attributes));
-          console.log("user_slot: " + JSON.stringify(user_slot));
-          handlerInput.attributesManager.setSessionAttributes(attributes);
-
-          console.log("ask if this is the user!");
-          return handlerInput.responseBuilder
-                  .speak(requestAttributes.t('IS_THIS_USER', user_slot.value))
-                  .reprompt(requestAttributes.t('IS_THIS_USER', user_slot.value))
-                  .getResponse();
-        } else {
-          return handlerInput.responseBuilder
-            .speak(requestAttributes.t('ERROR_MESSAGE'))
-            .getResponse();
+            return checkForNextUser(handlerInput);
         }
       } catch(err) {
         return handlerInput.responseBuilder
@@ -178,26 +238,6 @@ const SendTipIntent = {
             return handlerInput.responseBuilder
                 .addDelegateDirective(currentIntent)
                 .getResponse();
-    }
-
-    try {
-
-      if(userinfo && !userinfo.error) {
-        //found single user -> repromt to send
-        if(userinfo.data.length == 1 && amount < 0.1) { //make sure to not send too much in testing! 
-          //await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": ACCESS_TOKEN, "amount": amount_slot.value, "to":"xrptipbot://"+userinfo.data[0].network+"/"+userinfo.data[0].username})});
-
-          return handlerInput.responseBuilder
-            .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, userinfo.data[0].username))
-            .getResponse();
-        } else {
-          return handlerInput.responseBuilder
-            .speak(requestAttributes.t('TIP_TOO_HIGH', amount, userinfo.data[0].username))
-            .getResponse();
-        }
-      }
-    } catch(err) {
-
     }
   },
 };
@@ -337,9 +377,11 @@ const deData = {
     WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an andere User senden.',
     ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App.',
     ACCOUNT_BALANCE: 'Dein XRP Tip Bott Kontostand ist: %s XRP.',
-    IS_THIS_USER: 'Meinst du den user %s?',
+    IS_THIS_USER: 'Meinst du den user %s aka %s?',
     TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet',
     SENDING_TIP_CANCEL: 'Ok, der Vorgang wurde abgebrochen und keine XRP gesendet.',
+    NO_USER_FOUND: 'Tut mir leid ich konnte keinen User mit diesem Namen finden. Bitte versuche es erneut',
+    NO_MORE_USERS: 'Tut mir leid, ich kann dir keine weiteren User anbieten. Bitte versuce es erneut.',
     TIP_TOO_HIGH: 'Der XRP Betrag ist zu hoch. Es können maximal 1 XRP gesendet werden.',
     HELP_MESSAGE: 'Du kannst sagen, „Wie ist mein Kontostand“, oder du kannst „Sende einen Tip an...“ und dann den Namen der Person. Wie kann ich dir helfen?',
     HELP_REPROMPT: 'Wie kann ich dir helfen?',
@@ -362,9 +404,11 @@ const enData = {
     WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to other users.',
     ACCOUNT_LINKING: 'You need to link your account first. Please open the companion app to link your account',
     ACCOUNT_BALANCE: 'Your XRP tip bot balance is: %s XRP.',
-    IS_THIS_USER: 'Do you mean user %s?',
+    IS_THIS_USER: 'Do you mean the user %s aka s?',
     TIP_SENT_RESPONSE: '%s XRP has been sent to %s',
     SENDING_TIP_CANCEL: 'Ok, no XRP were sent.',
+    NO_USER_FOUND: 'Sorry, I could not find a user with that name. Please try again.',
+    NO_MORE_USERS: 'Sorr but I dont know any more user with this name. Please try again.',
     TIP_TOO_HIGH: 'The XRP amount is too high. A maximum of 1 XRP can be sent at a time.',
     HELP_MESSAGE: 'You can say what is my balance, or, you can say send a tip to ... and then the name. What can I help you with?',
     HELP_REPROMPT: 'What can I help you with?',
