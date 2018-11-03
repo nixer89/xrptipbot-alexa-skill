@@ -78,12 +78,12 @@
                     "values": [
                         {
                             "name": {
-                                "value": "zrxy"
+                                "value": "why is the sky blue"
                             }
                         },
                         {
                             "name": {
-                                "value": "yxzr"
+                                "value": "who is the queen"
                             }
                         }
                     ]
@@ -135,7 +135,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "Wie viele XRP möchtest du senden?"
+                        "value": "Es können maximal zwanzig XRP gesendet werden. Wie viele XRP möchtest du senden?"
                     }
                 ]
             },

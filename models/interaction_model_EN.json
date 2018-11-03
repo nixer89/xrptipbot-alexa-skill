@@ -127,7 +127,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "How much XRP you want to send?"
+                        "value": "Only twenty XRP can be sent at a time. How much XRP you want to send?"
                     }
                 ]
             },
