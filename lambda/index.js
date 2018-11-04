@@ -9,6 +9,12 @@ var fetch = require('node-fetch');
 const BASE_URL = process.env.BASE_URL;
 const ACCESS_TOKEN = process.env.ACESS_TOKEN;
 
+var DialogState = {
+  AMOUNT_SELECTION: 0,
+  USER_SELECTION:1,
+  TIP_CONFIRMATION,
+}
+
 const LaunchHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
@@ -40,7 +46,7 @@ const GetBalanceIntent = {
       return request.type === 'IntentRequest'
           && request.intent.name === 'GetBalanceIntent'
           && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-          && !handlerInput.attributesManager.getSessionAttributes().sendTipConfirm;
+          && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
     },
     async handle(handlerInput) {
       console.log("GetBalanceIntent: " + JSON.stringify(handlerInput));
@@ -64,88 +70,16 @@ const GetBalanceIntent = {
     },
   };
 
-const YesIntent = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    // checks request type
-    return request.type === 'IntentRequest'
-        && request.intent.name === 'AMAZON.YesIntent'
-        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().sendTipConfirm);
-  },
-  handle(handlerInput) {
-    console.log("YesIntent: " + JSON.stringify(handlerInput));
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-
-    var amount = attributes.amountToTip;
-    var user = attributes.possibleUsers[0];
-
-    //reprompt
-    if(amount && user && !attributes.sendTipConfirm) {
-      var speechOutput = requestAttributes.t('TIP_CONFIRMATION', amount, user.username);
-      attributes.sendTipConfirm = true;
-      attributes.lastQuestion = speechOutput;
-      handlerInput.attributesManager.setSessionAttributes(attributes)
-
-      return handlerInput.responseBuilder
-              .speak(speechOutput)
-              .reprompt(speechOutput)
-              .getResponse();
-    } else if (amount && user) {
-      return sendTipViaTipBot(handlerInput, amount, user);
-    } else {
-      return handlerInput.responseBuilder
-          .speak(requestAttributes.t('ERROR_MESSAGE'))
-          .getResponse();
-    }
-  }
-}
-
-const NoIntent = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    // checks request type
-    return request.type === 'IntentRequest'
-        && request.intent.name === 'AMAZON.NoIntent'
-        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().sendTipConfirm);
-  },
-  handle(handlerInput) {
-    console.log("NoIntent: " + JSON.stringify(handlerInput));
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
-
-    console.log("handle no intent");
-
-    //check if we were in confirmation
-    if(attributes.sendTipConfirm) {
-      console.log("is checking whole tip")
-      return handlerInput.responseBuilder
-        .speak(requestAttributes.t('SENDING_TIP_CANCEL'))
-        .getResponse();
-    }
-
-    console.log("NoIntent attributes: " + JSON.stringify(attributes));
-
-    if(attributes.possibleUsers.length > 1) {
-      attributes.possibleUsers = attributes.possibleUsers.slice(1);
-    } else {
-      delete attributes.possibleUsers;
-    }
-    delete attributes.isYesOrNo;
-    handlerInput.attributesManager.setSessionAttributes(attributes);
-    
-    return checkForNextUser(handlerInput);
-  }
-}
-
 const SendTipIntent = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'SendTipIntent'
+        && !handlerInput.attributesManager.getSessionAttributes().isUserSelection
+        && !handlerInput.attributesManager.getSessionAttributes().isAmountSelection
         && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-        && !handlerInput.attributesManager.getSessionAttributes().sendTipConfirm;
+        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
   },
   async handle(handlerInput) {
     console.log("SendTipIntent: " + JSON.stringify(handlerInput));
@@ -159,23 +93,70 @@ const SendTipIntent = {
     var user_slot = handlerInput.requestEnvelope.request.intent.slots.user_name;
     console.log("amount: " + JSON.stringify(amount_slot));
     console.log("user: " + JSON.stringify(user_slot));
+  },
+};
+
+const AmountIntent = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    // checks request type
+    return request.type === 'IntentRequest'
+        && request.intent.name === 'AmountIntent'
+        && handlerInput.attributesManager.getSessionAttributes().isAmountSelection
+        && !handlerInput.attributesManager.getSessionAttributes().isUserSelection
+        && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
+        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+  },
+  handle(handlerInput) {
+    console.log("AmountIntent: " + JSON.stringify(handlerInput));
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    //getting amount and concatinating it
+
+
+
+    var amount = handlerInput.requestEnvelope.request.intent.slots.xrp;
 
     //make sure to collect to amount first and make sure amount does not exceed 20 XRP!
-    if(!amount_slot || !amount_slot.value || amount_slot.value == '?' || amount_slot.value > 20 || amount_slot.confirmationStatus !== "CONFIRMED") {
+    if(!amount_slot || !amount_slot.value || amount_slot.value == '?' || amount_slot.value > 20) {
       return handlerInput.responseBuilder
-                .addDelegateDirective(currentIntent)
+                .speak(currentIntent)
+                .reprompt()
                 .getResponse();
     }
     
     //amount seems ok!
-    attributes.amountToTip = amount_slot.value;
+    attributes.amountToTip = amount;
     handlerInput.attributesManager.setSessionAttributes(attributes);
-    
+
+    return handlerInput.responseBuilder
+        .speak(requestAttributes.t('ERROR_MESSAGE'))
+        .getResponse();
+  }
+};
+
+const UserNameIntent = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    // checks request type
+    return request.type === 'IntentRequest'
+        && request.intent.name === 'UserNameIntent'
+        && handlerInput.attributesManager.getSessionAttributes().isUserSelection
+        && !handlerInput.attributesManager.getSessionAttributes().isAmountSelection
+        && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
+        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+  },
+  handle(handlerInput) {
+    console.log("UserNameIntent: " + JSON.stringify(handlerInput));
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    var user_slot = handlerInput.requestEnvelope.request.intent.slots.user_name;
+
     //did not understand any user name -> reprompt user name!
     if(user_slot && !user_slot.value) {
-        return handlerInput.responseBuilder
-                  .addDelegateDirective(currentIntent)
-                  .getResponse();
+
     }
 
     try {
@@ -203,7 +184,81 @@ const SendTipIntent = {
         .speak(requestAttributes.t('ERROR_MESSAGE'))
         .getResponse();
     }
+  }
+};
+
+const YesIntent = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    // checks request type
+    return request.type === 'IntentRequest'
+        && request.intent.name === 'AMAZON.YesIntent'
+        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().isTipConfirmation);
   },
+  handle(handlerInput) {
+    console.log("YesIntent: " + JSON.stringify(handlerInput));
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    var amount = attributes.amountToTip;
+    var user = attributes.possibleUsers[0];
+
+    //reprompt
+    if(amount && user && !attributes.isTipConfirmation) {
+      var speechOutput = requestAttributes.t('TIP_CONFIRMATION', amount, user.username);
+      attributes.isTipConfirmation = true;
+      attributes.lastQuestion = speechOutput;
+      handlerInput.attributesManager.setSessionAttributes(attributes)
+
+      return handlerInput.responseBuilder
+              .speak(speechOutput)
+              .reprompt(speechOutput)
+              .getResponse();
+    } else if (amount && user) {
+      return sendTipViaTipBot(handlerInput, amount, user);
+    } else {
+      return handlerInput.responseBuilder
+          .speak(requestAttributes.t('ERROR_MESSAGE'))
+          .getResponse();
+    }
+  }
+};
+
+const NoIntent = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    // checks request type
+    return request.type === 'IntentRequest'
+        && request.intent.name === 'AMAZON.NoIntent'
+        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().isTipConfirmation);
+  },
+  handle(handlerInput) {
+    console.log("NoIntent: " + JSON.stringify(handlerInput));
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    console.log("handle no intent");
+
+    //check if we were in confirmation
+    if(attributes.isTipConfirmation) {
+      console.log("is checking whole tip")
+      return handlerInput.responseBuilder
+        .speak(requestAttributes.t('SENDING_TIP_CANCEL'))
+        .getResponse();
+    }
+
+    console.log("NoIntent attributes: " + JSON.stringify(attributes));
+
+    if(attributes.possibleUsers.length > 1) {
+      attributes.possibleUsers = attributes.possibleUsers.slice(1);
+    } else {
+      delete attributes.possibleUsers;
+    }
+    delete attributes.isYesOrNo;
+    handlerInput.attributesManager.setSessionAttributes(attributes);
+    
+    return checkForNextUser(handlerInput);
+  }
 };
 
 function checkForNextUser(handlerInput) {
@@ -284,14 +339,15 @@ const FallbackHandler = {
   //              safely deployed for any locale.
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest';
+    return request.type === 'IntentRequest'
+    && !handlerInput.attributesManager.getSessionAttributes().isUserSelection;
   },
   handle(handlerInput) {
     console.log("FallbackHandler: " + JSON.stringify(handlerInput));
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
 
-    if(attributes.isYesOrNo || attributes.sendTipConfirm) {
+    if(attributes.isYesOrNo || attributes.isTipConfirmation) {
       return handlerInput.responseBuilder
               .speak(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .reprompt(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
