@@ -7,12 +7,14 @@ var sprintf = require('i18next-sprintf-postprocessor');
 var fetch = require('node-fetch');
 
 const BASE_URL = process.env.BASE_URL;
-const ACCESS_TOKEN = process.env.ACESS_TOKEN;
 
-var DialogState = {
-  AMOUNT_SELECTION: 0,
-  USER_SELECTION:1,
-  TIP_CONFIRMATION,
+var DIALOG_STATE = {
+  NONE: 0,
+  AMOUNT_SELECTION: 2,
+  AMOUNT_CONFIRMATION: 3,
+  USER_SELECTION: 4,
+  USER_CONFIRMATION: 5,
+  TIP_CONFIRMATION: 6,
 }
 
 const LaunchHandler = {
@@ -25,10 +27,10 @@ const LaunchHandler = {
         console.log("LaunchRequest: " + JSON.stringify(handlerInput));
         const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
         var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
-        if(!ACCESS_TOKEN && !accessToken) {
+        if(!accessToken) {
           return handlerInput.responseBuilder
             .speak(requestAttributes.t('ACCOUNT_LINKING'))
-            .reprompt(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
             .getResponse();
         } else {
           return handlerInput.responseBuilder
@@ -45,19 +47,31 @@ const GetBalanceIntent = {
       // checks request type
       return request.type === 'IntentRequest'
           && request.intent.name === 'GetBalanceIntent'
-          && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-          && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+          && isDialogState(handlerInput, DIALOG_STATE.NONE);
     },
     async handle(handlerInput) {
+      var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        if(!accessToken) {
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
+            .getResponse();
+        }
       console.log("GetBalanceIntent: " + JSON.stringify(handlerInput));
         const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
         try {
-            let balance = await invokeBackend(BASE_URL+"/action:balance/", {method: "POST", body: JSON.stringify({"token": ACCESS_TOKEN})});
+            let balance = await invokeBackend(BASE_URL+"/action:balance/", {method: "POST", body: JSON.stringify({"token": accessToken})});
             if(balance && balance.data && balance.data.balance && balance.data.balance.XRP) {
               return handlerInput.responseBuilder
                   .speak(requestAttributes.t('ACCOUNT_BALANCE', balance.data.balance.XRP))
                   .getResponse();
-            } else {
+            } else if(balance && balance.error) {
+              //invalid access token
+              return handlerInput.responseBuilder
+                .speak(requestAttributes.t('ACCOUNT_LINKING'))
+                .withLinkAccountCard()
+                .getResponse();
+            }else {
               return handlerInput.responseBuilder
                 .speak(requestAttributes.t('ERROR_MESSAGE'))
                 .getResponse();
@@ -76,23 +90,28 @@ const SendTipIntent = {
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'SendTipIntent'
-        && !handlerInput.attributesManager.getSessionAttributes().isUserSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isAmountSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+        && isDialogState(handlerInput, DIALOG_STATE.NONE);
   },
   async handle(handlerInput) {
+    var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        if(!accessToken) {
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
+            .getResponse();
+        }
     console.log("SendTipIntent: " + JSON.stringify(handlerInput));
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
-    const request = handlerInput.requestEnvelope.request;
-    const currentIntent = request.intent;
 
-    console.log("request: " + JSON.stringify(handlerInput.requestEnvelope.request));
-    var amount_slot = handlerInput.requestEnvelope.request.intent.slots.xrp;
-    var user_slot = handlerInput.requestEnvelope.request.intent.slots.user_name;
-    console.log("amount: " + JSON.stringify(amount_slot));
-    console.log("user: " + JSON.stringify(user_slot));
+    //set amount selection dialog state
+    attributes.dialogState = DIALOG_STATE.AMOUNT_SELECTION;
+    handlerInput.attributesManager.setSessionAttributes(attributes)
+
+    return handlerInput.responseBuilder
+              .speak(requestAttributes.t('ASK_FOR_AMOUNT'))
+              .reprompt(requestAttributes.t('ASK_FOR_AMOUNT'))
+              .getResponse();
   },
 };
 
@@ -102,38 +121,71 @@ const AmountIntent = {
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'AmountIntent'
-        && handlerInput.attributesManager.getSessionAttributes().isAmountSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isUserSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+        && isDialogState(handlerInput, DIALOG_STATE.AMOUNT_SELECTION);
   },
   handle(handlerInput) {
+    var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        if(!accessToken) {
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
+            .getResponse();
+        }
     console.log("AmountIntent: " + JSON.stringify(handlerInput));
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-
-    //getting amount and concatinating it
-
-
-
-    var amount = handlerInput.requestEnvelope.request.intent.slots.xrp;
-
-    //make sure to collect to amount first and make sure amount does not exceed 20 XRP!
-    if(!amount_slot || !amount_slot.value || amount_slot.value == '?' || amount_slot.value > 20) {
-      return handlerInput.responseBuilder
-                .speak(currentIntent)
-                .reprompt()
-                .getResponse();
-    }
+    var slots = handlerInput.requestEnvelope.request.intent.slots;
     
-    //amount seems ok!
-    attributes.amountToTip = amount;
-    handlerInput.attributesManager.setSessionAttributes(attributes);
+    try {
+      var numberString1 = slots.number_a ? slots.number_a.value : "?";
+      var numberString2 = slots.number_b ? slots.number_b.value : "?";
+      var numberString3 = slots.number_c ? slots.number_c.value : "?";
+      var numberString4 = slots.number_d ? slots.number_d.value : "?";
 
-    return handlerInput.responseBuilder
+      //check if we have numbers
+      var wholeNumber = '';
+
+      if(!isNaN(numberString1)) {
+        wholeNumber += numberString1;
+        if(!isNaN(numberString2)) {
+          wholeNumber += "." +numberString2;
+          if(!isNaN(numberString3)) {
+            wholeNumber += numberString3;
+            if(!isNaN(numberString4)) {
+              wholeNumber += numberString4;
+            }
+          }
+        }
+      }
+
+      var speechOutput = "";
+      
+      if(isNaN(wholeNumber)) {
+        speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_FAIL');
+      //} else if(new Number(wholeNumber) <= 0.001) {
+      //  speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_MIN') + requestAttributes.t('ASK_FOR_AMOUNT');
+      }  else if(new Number(wholeNumber) > 20) {
+        speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_MAX') + requestAttributes.t('ASK_FOR_AMOUNT');
+      } else {
+        speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_CONFIRMATION', wholeNumber);
+
+        attributes.dialogState = DIALOG_STATE.AMOUNT_CONFIRMATION;
+        attributes.amountToTip = wholeNumber;
+        attributes.lastQuestion = speechOutput;
+        handlerInput.attributesManager.setSessionAttributes(attributes);
+      }
+
+      return handlerInput.responseBuilder
+                .speak(speechOutput)
+                .reprompt(speechOutput)
+                .getResponse();
+
+    } catch(err) {
+      return handlerInput.responseBuilder
         .speak(requestAttributes.t('ERROR_MESSAGE'))
         .getResponse();
-  }
+    }
+  },
 };
 
 const UserNameIntent = {
@@ -142,12 +194,16 @@ const UserNameIntent = {
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'UserNameIntent'
-        && handlerInput.attributesManager.getSessionAttributes().isUserSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isAmountSelection
-        && !handlerInput.attributesManager.getSessionAttributes().isYesOrNo
-        && !handlerInput.attributesManager.getSessionAttributes().isTipConfirmation;
+        && isDialogState(handlerInput, DIALOG_STATE.USER_SELECTION);
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
+    var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        if(!accessToken) {
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
+            .getResponse();
+        }
     console.log("UserNameIntent: " + JSON.stringify(handlerInput));
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
@@ -155,19 +211,21 @@ const UserNameIntent = {
     var user_slot = handlerInput.requestEnvelope.request.intent.slots.user_name;
 
     //did not understand any user name -> reprompt user name!
-    if(user_slot && !user_slot.value) {
-
+    if(!user_slot || !user_slot.value) {
+      return handlerInput.responseBuilder
+                .speak(requestAttributes.t('ASK_FOR_USER_FAIL'))
+                .reprompt(requestAttributes.t('ASK_FOR_USER_FAIL'))
+                .getResponse();
     }
 
     try {
       if(!attributes.possibleUsers) {
-          let userinfo = await invokeBackend(BASE_URL+"/action:lookup/", {method: "POST", body: JSON.stringify({token: ACCESS_TOKEN, query: user_slot.value})});
+          let userinfo = await invokeBackend(BASE_URL+"/action:contacts/", {method: "POST", body: JSON.stringify({token: accessToken, query: user_slot.value})});
           console.log("userinfo: " + JSON.stringify(userinfo));
           if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length >0) {
             attributes.possibleUsers = userinfo.data;
             console.log("possible users: " + JSON.stringify(attributes.possibleUsers));
             handlerInput.attributesManager.setSessionAttributes(attributes);
-
             return checkForNextUser(handlerInput);
           } else {
             return handlerInput.responseBuilder
@@ -184,7 +242,7 @@ const UserNameIntent = {
         .speak(requestAttributes.t('ERROR_MESSAGE'))
         .getResponse();
     }
-  }
+  },
 };
 
 const YesIntent = {
@@ -193,33 +251,44 @@ const YesIntent = {
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'AMAZON.YesIntent'
-        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().isTipConfirmation);
+        && (isDialogState(handlerInput, DIALOG_STATE.AMOUNT_CONFIRMATION)
+            || isDialogState(handlerInput, DIALOG_STATE.USER_CONFIRMATION)
+              || isDialogState(handlerInput, DIALOG_STATE.TIP_CONFIRMATION))
   },
   handle(handlerInput) {
     console.log("YesIntent: " + JSON.stringify(handlerInput));
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
-    var amount = attributes.amountToTip;
-    var user = attributes.possibleUsers[0];
-
-    //reprompt
-    if(amount && user && !attributes.isTipConfirmation) {
-      var speechOutput = requestAttributes.t('TIP_CONFIRMATION', amount, user.username);
-      attributes.isTipConfirmation = true;
-      attributes.lastQuestion = speechOutput;
-      handlerInput.attributesManager.setSessionAttributes(attributes)
-
+    if(isDialogState(handlerInput,DIALOG_STATE.AMOUNT_CONFIRMATION)) {
+      attributes.dialogState = DIALOG_STATE.USER_SELECTION;
+      handlerInput.attributesManager.setSessionAttributes(attributes);
       return handlerInput.responseBuilder
-              .speak(speechOutput)
-              .reprompt(speechOutput)
+              .speak(requestAttributes.t('ASK_FOR_USER'))
+              .reprompt(requestAttributes.t('ASK_FOR_USER'))
               .getResponse();
-    } else if (amount && user) {
-      return sendTipViaTipBot(handlerInput, amount, user);
-    } else {
+    }
+    else if(isDialogState(handlerInput,DIALOG_STATE.USER_CONFIRMATION)) {
+      attributes.dialogState = DIALOG_STATE.TIP_CONFIRMATION;
+      var amount = attributes.amountToTip;
+      var user = attributes.userinfo;
+
       return handlerInput.responseBuilder
-          .speak(requestAttributes.t('ERROR_MESSAGE'))
-          .getResponse();
+              .speak(requestAttributes.t('TIP_CONFIRMATION', amount, user.u))
+              .reprompt(requestAttributes.t('TIP_CONFIRMATION', amount, user.u))
+              .getResponse();
+    }
+    else if(isDialogState(handlerInput,DIALOG_STATE.TIP_CONFIRMATION)) {
+      var amount = attributes.amountToTip;
+      var user = attributes.userinfo;
+
+      //all checks done -> send the XRP!
+      return sendTipViaTipBot(handlerInput, amount, user);
+    }
+    else {
+      return handlerInput.responseBuilder
+        .speak(requestAttributes.t('ERROR_MESSAGE'))
+        .getResponse();
     }
   }
 };
@@ -230,48 +299,56 @@ const NoIntent = {
     // checks request type
     return request.type === 'IntentRequest'
         && request.intent.name === 'AMAZON.NoIntent'
-        && (handlerInput.attributesManager.getSessionAttributes().isYesOrNo || handlerInput.attributesManager.getSessionAttributes().isTipConfirmation);
+        && !isDialogState(handlerInput, DIALOG_STATE.NONE);
   },
   handle(handlerInput) {
     console.log("NoIntent: " + JSON.stringify(handlerInput));
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
-
     console.log("handle no intent");
 
-    //check if we were in confirmation
-    if(attributes.isTipConfirmation) {
-      console.log("is checking whole tip")
+    if(isDialogState(handlerInput,DIALOG_STATE.AMOUNT_CONFIRMATION )) {
+      attributes.dialogState = DIALOG_STATE.AMOUNT_SELECTION;
+      delete attributes.amountToTip;
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+      return handlerInput.responseBuilder
+              .speak(requestAttributes.t('ASK_FOR_AMOUNT'))
+              .reprompt(requestAttributes.t('ASK_FOR_AMOUNT'))
+              .getResponse();
+    }
+    else if(isDialogState(handlerInput,DIALOG_STATE.USER_CONFIRMATION)) {
+      if(attributes.possibleUsers.length > 1) {
+        attributes.possibleUsers = attributes.possibleUsers.slice(1);
+      } else {
+        delete attributes.possibleUsers;
+      }
+
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+      
+      return checkForNextUser(handlerInput);
+    }
+    else if(isDialogState(handlerInput,DIALOG_STATE.TIP_CONFIRMATION)) {
       return handlerInput.responseBuilder
         .speak(requestAttributes.t('SENDING_TIP_CANCEL'))
         .getResponse();
     }
 
     console.log("NoIntent attributes: " + JSON.stringify(attributes));
-
-    if(attributes.possibleUsers.length > 1) {
-      attributes.possibleUsers = attributes.possibleUsers.slice(1);
-    } else {
-      delete attributes.possibleUsers;
-    }
-    delete attributes.isYesOrNo;
-    handlerInput.attributesManager.setSessionAttributes(attributes);
-    
-    return checkForNextUser(handlerInput);
   }
 };
 
 function checkForNextUser(handlerInput) {
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
   const attributes = handlerInput.attributesManager.getSessionAttributes();
-  
+  console.log("attributes: " + JSON.stringify(attributes));
+
   if(attributes.possibleUsers && attributes.possibleUsers.length > 0) {
     var user = attributes.possibleUsers[0];
-    var speechOutput = requestAttributes.t('IS_THIS_USER', user.username, user.slug, user.network);
-    console.log("setting user: " + JSON.stringify(user));
-    console.log("attributes: " + JSON.stringify(attributes));
+    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', user.u, user.s, user.n);
+    console.log("current user: " + JSON.stringify(user));
+    attributes.dialogState = DIALOG_STATE.USER_CONFIRMATION;
+    attributes.userinfo = user;
     attributes.lastQuestion = speechOutput;
-    attributes.isYesOrNo = true;
     handlerInput.attributesManager.setSessionAttributes(attributes);
 
     console.log("ask if this is the user!");
@@ -287,6 +364,13 @@ function checkForNextUser(handlerInput) {
 }
 
 async function sendTipViaTipBot(handlerInput, amount, user) {
+  var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        if(!accessToken) {
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('ACCOUNT_LINKING'))
+            .withLinkAccountCard()
+            .getResponse();
+        }
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
   console.log("sending " + amount + " XRP an " + JSON.stringify(user));
   try {
@@ -295,10 +379,10 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
       //found single user -> repromt to send
       if(amount < 20) { //make sure to not send too much in testing! 
         console.log("amount is valid");
-        //await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": ACCESS_TOKEN, "amount": amount, "to":"xrptipbot://"+user.network+"/"+user.username})});
+        //await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
         return handlerInput.responseBuilder
-          .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, user.username))
+          .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, user.u))
           .getResponse();
       } else {
         return handlerInput.responseBuilder
@@ -317,6 +401,13 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
   }
 }
 
+function isDialogState(handlerInput, checkDialogState) {
+  if(!handlerInput.attributesManager.getSessionAttributes().dialogState)
+    return DIALOG_STATE.NONE === checkDialogState;
+  else 
+    return handlerInput.attributesManager.getSessionAttributes().dialogState === checkDialogState;
+}
+
 const HelpHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
@@ -326,6 +417,9 @@ const HelpHandler = {
   handle(handlerInput) {
     console.log("HelpHandler: " + JSON.stringify(handlerInput));
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    //cleanup
+    cleanup(handlerInput);
+
     return handlerInput.responseBuilder
       .speak(requestAttributes.t('HELP_MESSAGE'))
       .reprompt(requestAttributes.t('HELP_REPROMPT'))
@@ -340,19 +434,23 @@ const FallbackHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return request.type === 'IntentRequest'
-    && !handlerInput.attributesManager.getSessionAttributes().isUserSelection;
+    && !isDialogState(handlerInput, DIALOG_STATE.USER_SELECTION);
   },
   handle(handlerInput) {
     console.log("FallbackHandler: " + JSON.stringify(handlerInput));
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const attributes = handlerInput.attributesManager.getSessionAttributes();
 
-    if(attributes.isYesOrNo || attributes.isTipConfirmation) {
+    if(isDialogState(handlerInput, DIALOG_STATE.AMOUNT_CONFIRMATION)
+      || isDialogState(handlerInput, DIALOG_STATE.USER_CONFIRMATION)
+      || isDialogState(handlerInput, DIALOG_STATE.TIP_CONFIRMATION)) {
       return handlerInput.responseBuilder
               .speak(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .reprompt(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .getResponse();
     }
+
+    cleanup(handlerInput);
 
     return handlerInput.responseBuilder
       .speak(requestAttributes.t('FALLBACK_MESSAGE'))
@@ -404,6 +502,11 @@ const ErrorHandler = {
   },
 };
 
+function cleanup(handlerInput) {
+  const attributes = handlerInput.attributesManager.getSessionAttributes();
+  delete attributes.dialogState;
+  handler.attributesManager.setSessionAttributes(attributes);
+}
 // inside the index.js
 const LocalizationInterceptor = {
     process(handlerInput) {
@@ -447,6 +550,8 @@ exports.handler = skillBuilder
     LaunchHandler,
     GetBalanceIntent,
     SendTipIntent,
+    AmountIntent,
+    UserNameIntent,
     YesIntent,
     NoIntent,
     HelpHandler,
@@ -465,7 +570,14 @@ const deData = {
     WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an andere User senden. Wie kann ich dir helfen?',
     ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App.',
     ACCOUNT_BALANCE: 'Dein XRP Tip Bott Kontostand ist: %s XRP.',
-    IS_THIS_USER: 'Meinst du den user %s aka %s von %s?',
+    ASK_FOR_AMOUNT: 'Wie viele XRP willst du senden?',
+    ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden.',
+    ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
+    ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe die Zahl nicht verstanden. Bitte wiederhole.',
+    ASK_FOR_AMOUNT_CONFIRMATION: 'Du willst %s XRP senden, ist das korrekt?',
+    ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe den user nicht verstanden. Bitte wiederhole.',
+    ASK_FOR_USER: 'An welchen User willst du deinen Tipp senden?',
+    ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s aka %s von %s?',
     TIP_CONFIRMATION: 'Du willst %s XRP an den User %s senden, ist das korrekt?',
     TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet',
     SENDING_TIP_CANCEL: 'Ok, der Vorgang wurde abgebrochen und keine XRP gesendet.',
@@ -495,10 +607,17 @@ const enData = {
     WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to other users. What can I help you with?',
     ACCOUNT_LINKING: 'You need to link your account first. Please open the companion app to link your account',
     ACCOUNT_BALANCE: 'Your XRP tip bot balance is: %s XRP.',
-    IS_THIS_USER: 'Do you mean the user %s aka %s from %s?',
+    ASK_FOR_AMOUNT: 'How many XRP you want to send?',
+    ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden.',
+    ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
+    ASK_FOR_AMOUNT_FAIL: 'Sorry, I did not understand the number. Please repeat.',
+    ASK_FOR_AMOUNT_CONFIRMATION: 'You want to send %s XRP. Is this correct?',
+    ASK_FOR_USER: 'To which user you want to send your tip?',
+    ASK_FOR_USER_FAIL: 'Sorry, I did not understand the user. Please repeat.',
+    ASK_FOR_USER_CONFIRMATION: 'Do you mean the user %s aka %s from %s?',
     TIP_CONFIRMATION: 'You want to send %s XRP to the user %s . Is this correct?',
     TIP_SENT_RESPONSE: '%s XRP has been sent to %s',
-    SENDING_TIP_CANCEL: 'Ok, no XRP were sent.',
+    SENDING_TIP_CANCEL: 'Ok, no XRP has been sent.',
     NO_USER_FOUND: 'Sorry, I could not find a user with that name.',
     NO_MORE_USERS: 'Sorry but I dont know any more users with this name. Please try again.',
     TIP_TOO_HIGH: 'The XRP amount is too high. A maximum of 20 XRP can be sent at a time.',
@@ -540,5 +659,7 @@ function invokeBackend(url, options) {
   options.headers = {
       "Content-Type": "application/json",
   };
-  return fetch(url, options).then(res => res.json());
+  return fetch(url, options).then(res => {
+    return res.json();
+  });
 }
