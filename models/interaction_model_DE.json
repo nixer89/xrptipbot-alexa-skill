@@ -32,35 +32,12 @@
                 },
                 {
                     "name": "SendTipIntent",
-                    "slots": [
-                        {
-                            "name": "xrp",
-                            "type": "AMAZON.NUMBER",
-                            "samples": [
-                                "{xrp} XRP",
-                                "sende {xrp} XRP",
-                                "ich möchte {xrp} XRP senden",
-                                "{xrp}"
-                            ]
-                        },
-                        {
-                            "name": "user_name",
-                            "type": "user_name_slot_type",
-                            "samples": [
-                                "der user {user_name}",
-                                "ich will meine XRP an {user_name} senden",
-                                "an {user_name}"
-                            ]
-                        }
-                    ],
+                    "slots": [],
                     "samples": [
-                        "sende XRP an {user_name}",
-                        "sende {xrp} XRP",
+                        "tippe XRP",
+                        "verschicke XRP",
                         "sende XRP",
-                        "Ich will {xrp} XRP an {user_name} senden",
-                        "Sende {user_name} {xrp} XRP",
-                        "Gib {user_name} {xrp} XRP",
-                        "sende {xrp} XRP an {user_name} "
+                        "Ich will XRP senden"
                     ]
                 },
                 {
@@ -70,106 +47,49 @@
                 {
                     "name": "AMAZON.YesIntent",
                     "samples": []
-                }
-            ],
-            "types": [
+                },
                 {
-                    "name": "user_name_slot_type",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "why is the sky blue"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "who is the queen"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        "dialog": {
-            "intents": [
-                {
-                    "name": "SendTipIntent",
-                    "confirmationRequired": false,
-                    "prompts": {},
+                    "name": "AmountIntent",
                     "slots": [
                         {
-                            "name": "xrp",
-                            "type": "AMAZON.NUMBER",
-                            "confirmationRequired": true,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "confirmation": "Confirm.Slot.317937471527.501209385326",
-                                "elicitation": "Elicit.Slot.317937471527.501209385326"
-                            }
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
                         },
                         {
-                            "name": "user_name",
-                            "type": "user_name_slot_type",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Slot.317937471527.738222897090"
-                            }
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
                         }
+                    ],
+                    "samples": [
+                        "{number_a} komma {number_b} {number_c} {number_d} XRP",
+                        "{number_a} komma {number_b} {number_c} XRP",
+                        "{number_a} komma {number_b} XRP",
+                        "{number_a} XRP"
+                    ]
+                },
+                {
+                    "name": "UserNameIntent",
+                    "slots": [
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "suche nach {user_name}",
+                        "an {user_name}"
                     ]
                 }
-            ]
-        },
-        "prompts": [
-            {
-                "id": "Confirm.Intent.317937471527",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Du möchtest {xrp} XRP and den user {user_name} senden. Ist das korrekt?"
-                    }
-                ]
-            },
-            {
-                "id": "Elicit.Slot.317937471527.501209385326",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Es können maximal zwanzig XRP gesendet werden. Wie viele XRP möchtest du senden?"
-                    }
-                ]
-            },
-            {
-                "id": "Confirm.Slot.317937471527.501209385326",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Du möchtest {xrp} XRP senden. Ist das korrekt?"
-                    }
-                ]
-            },
-            {
-                "id": "Elicit.Slot.317937471527.738222897090",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Welcher user soll deine XRP erhalten?"
-                    },
-                    {
-                        "type": "PlainText",
-                        "value": "An wen willst du deine XRP senden?"
-                    }
-                ]
-            },
-            {
-                "id": "Confirm.Slot.317937471527.738222897090",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Der User an den du deine XRP senden willst heißt {user_name} , ist das korrekt?"
-                    }
-                ]
-            }
-        ]
+            ],
+            "types": []
+        }
     }
 }

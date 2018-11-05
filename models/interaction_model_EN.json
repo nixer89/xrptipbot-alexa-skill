@@ -30,29 +30,11 @@
                 },
                 {
                     "name": "SendTipIntent",
-                    "slots": [
-                        {
-                            "name": "xrp",
-                            "type": "AMAZON.NUMBER",
-                            "samples": [
-                                "I want to send {xrp}",
-                                "{xrp}"
-                            ]
-                        },
-                        {
-                            "name": "user_name",
-                            "type": "user_name",
-                            "samples": [
-                                "{user_name} should receive my XRP",
-                                "I want to send XRP to {user_name}",
-                                "{user_name}"
-                            ]
-                        }
-                    ],
+                    "slots": [],
                     "samples": [
-                        "Send {user_name} {xrp} XRP",
-                        "Give {user_name} {xrp} XRP",
-                        "Send {xrp} XRP to {user_name} "
+                        "Send XRP",
+                        "Give XRP",
+                        "Tip XRP "
                     ]
                 },
                 {
@@ -62,93 +44,50 @@
                 {
                     "name": "AMAZON.YesIntent",
                     "samples": []
-                }
-            ],
-            "types": [
+                },
                 {
-                    "name": "user_name",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "WietseWind"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "nixerFFM"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        "dialog": {
-            "intents": [
-                {
-                    "name": "SendTipIntent",
-                    "confirmationRequired": false,
-                    "prompts": {},
+                    "name": "AmountIntent",
                     "slots": [
                         {
-                            "name": "xrp",
-                            "type": "AMAZON.NUMBER",
-                            "confirmationRequired": true,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "confirmation": "Confirm.Slot.411127291159.854599265297",
-                                "elicitation": "Elicit.Slot.73790648461.514448116770"
-                            }
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
                         },
                         {
-                            "name": "user_name",
-                            "type": "user_name",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Slot.213838131317.1374394456518"
-                            }
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
                         }
+                    ],
+                    "samples": [
+                        "{number_a} point {number_b} {number_c} {number_d} XRP",
+                        "{number_a} point {number_b} {number_c} XRP",
+                        "{number_a} point {number_b} XRP",
+                        "{number_a} XRP"
+                    ]
+                },
+                {
+                    "name": "UserNameIntent",
+                    "slots": [
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "tip to {user_name}",
+                        "give xrp to {user_name}",
+                        "to {user_name}"
                     ]
                 }
-            ]
-        },
-        "prompts": [
-            {
-                "id": "Elicit.Slot.213838131317.1374394456518",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Who should receive your XRP?"
-                    }
-                ]
-            },
-            {
-                "id": "Elicit.Slot.73790648461.514448116770",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Only twenty XRP can be sent at a time. How much XRP you want to send?"
-                    }
-                ]
-            },
-            {
-                "id": "Confirm.Intent.674533691845",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "You want to send {xrp} XRP to user {user_name} ?"
-                    }
-                ]
-            },
-            {
-                "id": "Confirm.Slot.411127291159.854599265297",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "You want to send {xrp} XRP?"
-                    }
-                ]
-            }
-        ]
+            ],
+            "types": []
+        }
     }
 }
