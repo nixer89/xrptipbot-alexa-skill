@@ -5,6 +5,7 @@ var Alexa = require('ask-sdk-core');
 var i18n = require('i18next');
 var sprintf = require('i18next-sprintf-postprocessor');
 var fetch = require('node-fetch');
+var levenshtein = require('fast-levenshtein');
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -220,11 +221,16 @@ const UserNameIntent = {
 
     try {
       if(!attributes.possibleUsers) {
-          let userinfo = await invokeBackend(BASE_URL+"/action:contacts/", {method: "POST", body: JSON.stringify({token: accessToken, query: user_slot.value})});
+          let userinfo = await invokeBackend(BASE_URL+"/action:contacts/", {method: "POST", body: JSON.stringify({token: accessToken})});
           console.log("userinfo: " + JSON.stringify(userinfo));
-          if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length >0) {
-            attributes.possibleUsers = userinfo.data;
-            console.log("possible users: " + JSON.stringify(attributes.possibleUsers));
+          if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
+            //compare with levenshtein and sort by lowest distance
+            var possibleUsers = userinfo.data;
+            possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.u, user_slot.value));
+            possibleUsers.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
+
+            attributes.possibleUsers = possibleUsers;
+            console.log("possible users sorted: " + JSON.stringify(attributes.possibleUsers));
             handlerInput.attributesManager.setSessionAttributes(attributes);
             return checkForNextUser(handlerInput);
           } else {
@@ -505,7 +511,7 @@ const ErrorHandler = {
 function cleanup(handlerInput) {
   const attributes = handlerInput.attributesManager.getSessionAttributes();
   delete attributes.dialogState;
-  handler.attributesManager.setSessionAttributes(attributes);
+  handlerInput.attributesManager.setSessionAttributes(attributes);
 }
 // inside the index.js
 const LocalizationInterceptor = {
