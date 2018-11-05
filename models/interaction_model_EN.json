@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "tip bot",
+            "invocationName": "ex are pee tip bot",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -23,7 +23,7 @@
                     "name": "GetBalanceIntent",
                     "slots": [],
                     "samples": [
-                        "How much XRP do I have",
+                        "How many XRP do I have",
                         "What is my XRP Tip Bot balance",
                         "What is my balance"
                     ]
@@ -32,6 +32,9 @@
                     "name": "SendTipIntent",
                     "slots": [],
                     "samples": [
+                        "tip ex are pee",
+                        "give ex are pee",
+                        "send ex are pee",
                         "Send XRP",
                         "Give XRP",
                         "Tip XRP "

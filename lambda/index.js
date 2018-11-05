@@ -383,9 +383,9 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
     if(amount && user) {
       console.log("We have an amount and user");
       //found single user -> repromt to send
-      if(amount < 20) { //make sure to not send too much in testing! 
+      if(amount <= 20) { //make sure to not send too much in testing! 
         console.log("amount is valid");
-        //await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
+        await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
         return handlerInput.responseBuilder
           .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, user.u))
@@ -439,8 +439,7 @@ const FallbackHandler = {
   //              safely deployed for any locale.
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest'
-    && !isDialogState(handlerInput, DIALOG_STATE.USER_SELECTION);
+    return request.type === 'IntentRequest';
   },
   handle(handlerInput) {
     console.log("FallbackHandler: " + JSON.stringify(handlerInput));
@@ -453,6 +452,16 @@ const FallbackHandler = {
       return handlerInput.responseBuilder
               .speak(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .reprompt(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
+              .getResponse();
+    } else if(isDialogState(handlerInput, DIALOG_STATE.AMOUNT_SELECTION)) {
+      return handlerInput.responseBuilder
+              .speak(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))
+              .reprompt(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))
+              .getResponse();
+    } else if(isDialogState(handlerInput, DIALOG_STATE.USER_SELECTION)) {
+      return handlerInput.responseBuilder
+              .speak(requestAttributes.t('ASK_FOR_USER_FALLBACK'))
+              .reprompt(requestAttributes.t('ASK_FOR_USER_FALLBACK'))
               .getResponse();
     }
 
@@ -581,9 +590,11 @@ const deData = {
     ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
     ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe die Zahl nicht verstanden. Bitte wiederhole.',
     ASK_FOR_AMOUNT_CONFIRMATION: 'Du willst %s XRP senden, ist das korrekt?',
-    ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe den user nicht verstanden. Bitte wiederhole.',
+    ASK_FOR_AMOUNT_FALLBACK: 'Sorry, das habe ich leider nicht verstanden. Bitte wiederhole den Betrag.',
     ASK_FOR_USER: 'An welchen User willst du deinen Tipp senden?',
+    ASK_FOR_USER_FAIL: 'Sorry, ich habe den user nicht verstanden. Bitte wiederhole.',
     ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s aka %s von %s?',
+    ASK_FOR_USER_FALLBACK: 'Das habe ich leider nicht verstanden. Bitte sage: an ... und dann den Usernamen.',
     TIP_CONFIRMATION: 'Du willst %s XRP an den User %s senden, ist das korrekt?',
     TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet',
     SENDING_TIP_CANCEL: 'Ok, der Vorgang wurde abgebrochen und keine XRP gesendet.',
@@ -618,9 +629,11 @@ const enData = {
     ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
     ASK_FOR_AMOUNT_FAIL: 'Sorry, I did not understand the number. Please repeat.',
     ASK_FOR_AMOUNT_CONFIRMATION: 'You want to send %s XRP. Is this correct?',
+    ASK_FOR_AMOUNT_FALLBACK: 'Sorry, I could not understand. Please repeat the amount',
     ASK_FOR_USER: 'To which user you want to send your tip?',
     ASK_FOR_USER_FAIL: 'Sorry, I did not understand the user. Please repeat.',
     ASK_FOR_USER_CONFIRMATION: 'Do you mean the user %s aka %s from %s?',
+    ASK_FOR_USER_FALLBACK: 'Sorry, I could not understand. Please say: to... and the user name',
     TIP_CONFIRMATION: 'You want to send %s XRP to the user %s . Is this correct?',
     TIP_SENT_RESPONSE: '%s XRP has been sent to %s',
     SENDING_TIP_CANCEL: 'Ok, no XRP has been sent.',

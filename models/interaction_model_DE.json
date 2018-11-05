@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "tip bot",
+            "invocationName": "iks er pe tip bot",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -34,10 +34,11 @@
                     "name": "SendTipIntent",
                     "slots": [],
                     "samples": [
+                        "tippe iks er pe",
                         "tippe XRP",
-                        "verschicke XRP",
-                        "sende XRP",
-                        "Ich will XRP senden"
+                        "sende iks er pe",
+                        "sende Rippel",
+                        "sende XRP"
                     ]
                 },
                 {
@@ -69,10 +70,10 @@
                         }
                     ],
                     "samples": [
-                        "{number_a} komma {number_b} {number_c} {number_d} XRP",
-                        "{number_a} komma {number_b} {number_c} XRP",
-                        "{number_a} komma {number_b} XRP",
-                        "{number_a} XRP"
+                        "{number_a} komma {number_b} {number_c} {number_d} ",
+                        "{number_a} komma {number_b} {number_c} ",
+                        "{number_a} komma {number_b} ",
+                        "{number_a} "
                     ]
                 },
                 {
@@ -84,6 +85,7 @@
                         }
                     ],
                     "samples": [
+                        "tippe XRP an {user_name}",
                         "suche nach {user_name}",
                         "an {user_name}"
                     ]
