@@ -3,13 +3,13 @@ The XRPTipBot-Skill lets you check your XRP TipBot-Balance and you are also able
 
 # XRPTipBot-Skill Details
 
-##Checking your balance
+## Checking your balance
 To check your balance, use one of the following commands:
 - "Alexa, ask Tip Bot for my balance."
 - "How many XRP do I have?"
 - "What is my balance?"
 
-##Sending tips to your contacts
+## Sending tips to your contacts
 To send a tip to one of your contacts, just say:
 - "Alexa, tell Tip Bot to send 0.01 XRP"
 - "send XRP"

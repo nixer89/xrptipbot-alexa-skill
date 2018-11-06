@@ -1,16 +1,16 @@
-#XRPTipBot-Skill Overview
+# XRPTipBot-Skill Overview
 Mit dem XRPTipBot-Skill kannst du deinen TipBot-Kontostand abfragen oder Tips an deine Kontakte senden! Alles was du brauchst ist deine Stimme!
 
-#XRPTipBot-Skill Details
+# XRPTipBot-Skill Details
 
-##Abfrage des Kontostandes
+## Abfrage des Kontostandes
 Um den Kontostand abzufragen, kannst du folgende Befehle nutzen:
 - "Alexa, frage Tip Bot nach meinen XRP."
 - "Alexa, frage Tip Bot nach meinem Kontostand."
 - "Wie viele XRP habe ich?"
 - "Wie ist mein Kontostand?"
 
-##Einen Tip an einen Freund senden
+## Einen Tip an einen Freund senden
 Um XRP-Tips an einen deiner Kontakte zu senden, kannst du einfach sagen:
 - "sende XRP"
 - "sende XPR an {user_name}"
