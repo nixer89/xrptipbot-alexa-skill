@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "iks er pe tip bot",
+            "invocationName": "tipp bott",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -32,13 +32,34 @@
                 },
                 {
                     "name": "SendTipIntent",
-                    "slots": [],
+                    "slots": [
+                        {
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
                     "samples": [
-                        "tippe iks er pe",
-                        "tippe XRP",
-                        "sende iks er pe",
-                        "sende Rippel",
-                        "sende XRP"
+                        "sende XRP an {user_name}",
+                        "sende {number_a} komma {number_b} {number_c} {number_d} XRP",
+                        "sende {number_a} komma {number_b} {number_c} XRP",
+                        "sende {number_a} komma {number_b} XRP",
+                        "sende {number_a} XRP"
                     ]
                 },
                 {
@@ -70,6 +91,10 @@
                         }
                     ],
                     "samples": [
+                        "{number_a} komma {number_b} {number_c} {number_d}  XRP",
+                        "{number_a} komma {number_b} {number_c}  XRP",
+                        "{number_a} komma {number_b} XRP",
+                        "{number_a}  XRP",
                         "{number_a} komma {number_b} {number_c} {number_d} ",
                         "{number_a} komma {number_b} {number_c} ",
                         "{number_a} komma {number_b} ",

@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "ex are pee tip bot",
+            "invocationName": "tip bot",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -23,6 +23,7 @@
                     "name": "GetBalanceIntent",
                     "slots": [],
                     "samples": [
+                        "for my XRP balance",
                         "How many XRP do I have",
                         "What is my XRP Tip Bot balance",
                         "What is my balance"
@@ -30,14 +31,34 @@
                 },
                 {
                     "name": "SendTipIntent",
-                    "slots": [],
+                    "slots": [
+                        {
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
                     "samples": [
-                        "tip ex are pee",
-                        "give ex are pee",
-                        "send ex are pee",
-                        "Send XRP",
-                        "Give XRP",
-                        "Tip XRP "
+                        "send XRP to {user_name}",
+                        "send {number_a} point {number_b} {number_c} {number_d}  XRP",
+                        "send {number_a} point {number_b} {number_c} XRP",
+                        "send {number_a} point {number_b} XRP",
+                        "send {number_a} XRP"
                     ]
                 },
                 {
@@ -72,7 +93,11 @@
                         "{number_a} point {number_b} {number_c} {number_d} XRP",
                         "{number_a} point {number_b} {number_c} XRP",
                         "{number_a} point {number_b} XRP",
-                        "{number_a} XRP"
+                        "{number_a} XRP",
+                        "{number_a} point {number_b} {number_c} {number_d}",
+                        "{number_a} point {number_b} {number_c}",
+                        "{number_a} point {number_b}",
+                        "{number_a}"
                     ]
                 },
                 {
