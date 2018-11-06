@@ -725,7 +725,7 @@ const enData = {
     ASK_FOR_AMOUNT_FAIL: 'Sorry, I did not understand the number. Please repeat.',
     ASK_FOR_AMOUNT_CONFIRMATION: '%s XRP. Correct?',
     ASK_FOR_AMOUNT_FALLBACK: 'Sorry, I could not understand. Please repeat the amount',
-    ASK_FOR_USER: 'To which user you want to send your tip?',
+    ASK_FOR_USER: 'To which user you want to send your tip to?',
     ASK_FOR_USER_FAIL: 'Sorry, I did not understand the user. Please repeat.',
     ASK_FOR_USER_CONFIRMATION: 'Do you mean the user %s aka %s from %s?',
     ASK_FOR_USER_FALLBACK: 'Sorry, I could not understand. Please start with: to... and the user name.',
