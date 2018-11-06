@@ -60,12 +60,13 @@ const GetBalanceIntent = {
       }
       console.log("GetBalanceIntent: " + JSON.stringify(handlerInput));
       const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+      var locale = handlerInput.requestEnvelope.request.locale;
       try {
           let balance = await invokeBackend(BASE_URL+"/action:balance/", {method: "POST", body: JSON.stringify({"token": accessToken})});
           if(balance && balance.data && balance.data.balance && balance.data.balance.XRP) {
             return handlerInput.responseBuilder
-                .speak(requestAttributes.t('ACCOUNT_BALANCE', balance.data.balance.XRP))
-                .reprompt(requestAttributes.t('ACCOUNT_BALANCE', balance.data.balance.XRP))
+                .speak(requestAttributes.t('ACCOUNT_BALANCE', localizeAmount(locale,balance.data.balance.XRP)))
+                .reprompt(requestAttributes.t('ACCOUNT_BALANCE', localizeAmount(locale,balance.data.balance.XRP)))
                 .getResponse();
           } else if(balance && balance.error) {
             //invalid access token
@@ -252,10 +253,11 @@ const YesIntent = {
       attributes.dialogState = DIALOG_STATE.TIP_CONFIRMATION;
       var amount = attributes.amountToTip;
       var user = attributes.userinfo;
+      var locale = handlerInput.requestEnvelope.request.locale;
 
       return handlerInput.responseBuilder
-              .speak(requestAttributes.t('TIP_CONFIRMATION', amount, user.u))
-              .reprompt(requestAttributes.t('TIP_CONFIRMATION', amount, user.u))
+              .speak(requestAttributes.t('TIP_CONFIRMATION', localizeAmount(locale,amount), user.u))
+              .reprompt(requestAttributes.t('TIP_CONFIRMATION', localizeAmount(locale,amount), user.u))
               .getResponse();
     }
     else if(isDialogState(handlerInput,DIALOG_STATE.TIP_CONFIRMATION)) {
@@ -356,6 +358,7 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
             .getResponse();
         }
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+  var locale = handlerInput.requestEnvelope.request.locale;
   console.log("sending " + amount + " XRP an " + JSON.stringify(user));
   try {
     if(amount && user) {
@@ -366,11 +369,11 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
         await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
         return handlerInput.responseBuilder
-          .speak(requestAttributes.t('TIP_SENT_RESPONSE', amount, user.u))
+          .speak(requestAttributes.t('TIP_SENT_RESPONSE', localizeAmount(locale,amount), user.u))
           .getResponse();
       } else {
         return handlerInput.responseBuilder
-          .speak(requestAttributes.t('TIP_TOO_HIGH', amount, user.username))
+          .speak(requestAttributes.t('ASK_FOR_AMOUNT_MAX'))
           .getResponse();
       }
     } else {
@@ -420,6 +423,7 @@ function checkNumberSlots(handlerInput) {
 function handleAmount(handlerInput) {
   const attributes = handlerInput.attributesManager.getSessionAttributes();
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+  var locale = handlerInput.requestEnvelope.request.locale;
   
   try {
     //check if we have numbers
@@ -428,7 +432,7 @@ function handleAmount(handlerInput) {
 
     console.log("wholeNumber: " + wholeNumber);
 
-    if(isNaN(wholeNumber)) {
+    if(isNaN(wholeNumber) || wholeNumber <= 0) {
       if(isDialogState(handlerInput, DIALOG_STATE.NONE))
         speechOutput = requestAttributes.t('ASK_FOR_AMOUNT');
       else
@@ -445,7 +449,7 @@ function handleAmount(handlerInput) {
       attributes.lastQuestion = speechOutput;
       handlerInput.attributesManager.setSessionAttributes(attributes);
     } else {
-      speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_CONFIRMATION', wholeNumber);
+      speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_CONFIRMATION', localizeAmount(locale, wholeNumber));
 
       attributes.dialogState = DIALOG_STATE.AMOUNT_CONFIRMATION;
       attributes.amountToTip = wholeNumber;
@@ -499,6 +503,13 @@ function isDialogState(handlerInput, checkDialogState) {
     return DIALOG_STATE.NONE === checkDialogState;
   else 
     return handlerInput.attributesManager.getSessionAttributes().dialogState === checkDialogState;
+}
+
+function localizeAmount(locale, amount) {
+  if(locale.startsWith('de'))
+    return amount.replace('.',',');
+  else
+    return amount;
 }
 
 const HelpHandler = {
@@ -669,71 +680,66 @@ exports.handler = skillBuilder
 const deData = {
   translation: {
     SKILL_NAME: 'XRP Tip Bott',
-    WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an andere User senden. Wie kann ich dir helfen?',
-    ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App.',
+    WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an andere User senden. Wie kann ich dir helfen? ',
+    ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App. ',
     ACCOUNT_BALANCE: 'Dein XRP Tip Bott Kontostand ist: %s XRP. Wie kann ich dir sonst helfen?',
-    ASK_FOR_AMOUNT: 'Wie viele XRP willst du senden?',
-    ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden.',
-    ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
-    ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe die Zahl nicht verstanden. Bitte wiederhole.',
-    ASK_FOR_AMOUNT_CONFIRMATION: '%s XRP. Richtig?',
-    ASK_FOR_AMOUNT_FALLBACK: 'Sorry, das habe ich leider nicht verstanden. Bitte wiederhole den Betrag.',
-    ASK_FOR_USER: 'An welchen User willst du deinen Tipp senden?',
-    ASK_FOR_USER_FAIL: 'Sorry, ich habe den user nicht verstanden. Bitte wiederhole.',
-    ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s aka %s von %s?',
-    ASK_FOR_USER_FALLBACK: 'Das habe ich leider nicht verstanden. Bitte sage: an ... und dann den Usernamen.',
-    TIP_CONFIRMATION: 'Du willst %s XRP an den User %s senden, ist das korrekt?',
-    TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet',
-    SENDING_TIP_CANCEL: 'Ok, der Vorgang wurde abgebrochen und keine XRP gesendet.',
-    NO_USER_FOUND: 'Tut mir leid ich konnte keinen User mit diesem Namen finden.',
-    NO_MORE_USERS: 'Tut mir leid, ich kann dir keine weiteren User anbieten. Bitte versuce es erneut.',
-    TIP_TOO_HIGH: 'Der XRP Betrag ist zu hoch. Es können maximal 20 XRP gesendet werden.',
-    TIP_TOO_HIGH_ASK: 'Bitte wähle einen neuen Betrag.',
-    ANSWER_YES_NO: 'Bitte antworte mit: Ja oder Nein oder sage abbrechen.',
-    HELP_MESSAGE: 'Du kannst sagen, „Wie ist mein Kontostand“, oder du kannst „Sende einen Tip an...“ und dann den Namen der Person. Wie kann ich dir helfen?',
-    HELP_REPROMPT: 'Wie kann ich dir helfen?',
-    FALLBACK_MESSAGE: 'Der XRP Tip Bott Skill kann dir dabei nicht helfen. Ich kann XRP Tips an Freunde senden oder deinen XRP Tip Bott Kontostand abfragen. Wie kann ich dir helfen?',
-    FALLBACK_REPROMPT: 'Wie kann ich dir helfen?',
-    ERROR_MESSAGE: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-    STOP_MESSAGE: 'Auf Wiedersehen!',
+    ASK_FOR_AMOUNT: 'Wie viele XRP willst du senden? ',
+    ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden. ',
+    ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden. ',
+    ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe die Zahl nicht verstanden. Bitte wiederhole. ',
+    ASK_FOR_AMOUNT_CONFIRMATION: '%s XRP. Richtig? ',
+    ASK_FOR_AMOUNT_FALLBACK: 'Sorry, das habe ich leider nicht verstanden. Bitte wiederhole den Betrag. ',
+    ASK_FOR_USER: 'An welchen User willst du deinen Tipp senden? ',
+    ASK_FOR_USER_FAIL: 'Sorry, ich habe den User nicht verstanden. Bitte wiederhole. ',
+    ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s aka %s von %s? ',
+    ASK_FOR_USER_FALLBACK: 'Das habe ich leider nicht verstanden. Bitte sage: an ... und dann den Usernamen. ',
+    TIP_CONFIRMATION: 'Du willst %s XRP an den User %s senden, korrekt? ',
+    TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet. ',
+    SENDING_TIP_CANCEL: 'Ok, der Vorgang wurde abgebrochen und keine XRP gesendet. ',
+    NO_USER_FOUND: 'Tut mir leid ich konnte keinen User mit diesem Namen finden. ',
+    NO_MORE_USERS: 'Tut mir leid, ich kann dir keine weiteren User anbieten. Bitte versuce es erneut. ',
+    ANSWER_YES_NO: 'Bitte antworte mit Ja, Nein oder sage abbrechen. ',
+    HELP_MESSAGE: 'Du kannst sagen, „Wie ist mein Kontostand“, oder „Sende 0,1 XRP“. Wie kann ich dir helfen? ',
+    HELP_REPROMPT: 'Wie kann ich dir helfen? ',
+    FALLBACK_MESSAGE: 'Der XRP Tip Bott Skill kann dir dabei nicht helfen. Ich kann XRP Tips an deine XRP Tip Bott Kontakte senden oder deinen XRP Tip Bott Kontostand abfragen. Wie kann ich dir helfen?',
+    FALLBACK_REPROMPT: 'Wie kann ich dir helfen? ',
+    ERROR_MESSAGE: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut. ',
+    STOP_MESSAGE: 'Auf Wiedersehen! Bis zum nächsten mal.',
   },
 };
 
 const dedeData = {
   translation: {
-    SKILL_NAME: 'XRP Tip Bott',
+    SKILL_NAME: 'XRP Tip Bot',
   },
 };
 
 const enData = {
   translation: {
     SKILL_NAME: 'XRP Tip Bot',
-    WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to other users. What can I help you with?',
-    ACCOUNT_LINKING: 'You need to link your account first. Please open the companion app to link your account',
+    WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to you contacts. What can I help you with?',
+    ACCOUNT_LINKING: 'You need to link your account first. Please open the Alexa companion app to link your account',
     ACCOUNT_BALANCE: 'Your XRP tip bot balance is: %s XRP. How can I help you with?',
     ASK_FOR_AMOUNT: 'How many XRP you want to send?',
-    ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden.',
-    ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden.',
+    ASK_FOR_AMOUNT_MAX: 'A maxiumum of 20 XRP can be sent at a time.',
     ASK_FOR_AMOUNT_FAIL: 'Sorry, I did not understand the number. Please repeat.',
     ASK_FOR_AMOUNT_CONFIRMATION: '%s XRP. Correct?',
     ASK_FOR_AMOUNT_FALLBACK: 'Sorry, I could not understand. Please repeat the amount',
     ASK_FOR_USER: 'To which user you want to send your tip?',
     ASK_FOR_USER_FAIL: 'Sorry, I did not understand the user. Please repeat.',
     ASK_FOR_USER_CONFIRMATION: 'Do you mean the user %s aka %s from %s?',
-    ASK_FOR_USER_FALLBACK: 'Sorry, I could not understand. Please say: to... and the user name.',
-    TIP_CONFIRMATION: 'You want to send %s XRP to the user %s . Is this correct?',
+    ASK_FOR_USER_FALLBACK: 'Sorry, I could not understand. Please start with: to... and the user name.',
+    TIP_CONFIRMATION: 'You want to send %s XRP to the user %s . Correct?',
     TIP_SENT_RESPONSE: '%s XRP has been sent to %s .',
     SENDING_TIP_CANCEL: 'Ok, no XRP has been sent.',
-    NO_USER_FOUND: 'Sorry, I could not find a user with that name.',
+    NO_USER_FOUND: 'Sorry, I could not find a user with this name.',
     NO_MORE_USERS: 'Sorry but I dont know any more users with this name. Please try again.',
-    TIP_TOO_HIGH: 'The XRP amount is too high. A maximum of 20 XRP can be sent at a time.',
-    TIP_TOO_HIGH_ASK: 'Please choose a new amount.',
     ANSWER_YES_NO: 'Please answer with yes, no or cancel.',
-    HELP_MESSAGE: 'You can say what is my balance, or, you can say send a tip to ... and then the name. What can I help you with?',
+    HELP_MESSAGE: 'You can say... what is my balance, or, you can say... send 0.1 XRP. What can I help you with?',
     HELP_REPROMPT: 'What can I help you with?',
-    FALLBACK_MESSAGE: 'The XRP Tip Bot skill can\'t help you with that. It can help you sending tips to your friends or getting your tip bot balance. What can I help you with?',
+    FALLBACK_MESSAGE: 'The XRP Tip Bot skill can\'t help you with that. It can help you sending tips to your XRP Tip Bot contacts or getting your tip bot balance. What can I help you with?',
     FALLBACK_REPROMPT: 'What can I help you with?',
-    ERROR_MESSAGE: 'Sorry, an error occurred. Please try again.',
+    ERROR_MESSAGE: 'Sorry, an error occurred. Please report the problem and try again.',
     STOP_MESSAGE: 'Goodbye! See you next time!'
   },
 };

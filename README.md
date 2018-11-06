@@ -1,15 +1,15 @@
 # XRPTipBot-Skill Overview
 The XRPTipBot-Skill lets you check your XRP TipBot-Balance and you are also able to send tips to your contacts within a few seconds. All you need is your voice!
 
-## XRPTipBot-Skill Details
+# XRPTipBot-Skill Details
 
-###Checking your balance
+##Checking your balance
 To check your balance, use one of the following commands:
 - "Alexa, ask Tip Bot for my balance."
 - "How many XRP do I have?"
 - "What is my balance?"
 
-###sending tips to your contacts
+##Sending tips to your contacts
 To send a tip to one of your contacts, just say:
 - "Alexa, tell Tip Bot to send 0.01 XRP"
 - "send XRP"
@@ -32,7 +32,7 @@ MeinLottoAlexa@gmail.com
 
 Disclosure:
 This skill is not an official product of the XRPTipBot (https://www.xrptipbot.com).
-The skill uses the open API of the XRP TipBot to send tips and check your balance.
+The skill uses the open API of the XRP TipBot to send tips and to check your balance.
 There is no liability for lost XRP.
 This skill does not store any personal information.
 
