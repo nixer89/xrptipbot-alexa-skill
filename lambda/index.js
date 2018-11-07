@@ -10,6 +10,7 @@ var levenshtein = require('fast-levenshtein');
 //language properties
 var german_properties = require('./translations/german/translation_de');
 var english_properties = require('./translations/english/translation_en');
+var twitter_to_alexa = require("./translations/twitter_to_alexa/translation_twitter_to_alexa");
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -317,7 +318,7 @@ function checkForNextUser(handlerInput) {
 
   if(attributes.possibleUsers && attributes.possibleUsers.length > 0) {
     var user = attributes.possibleUsers[0];
-    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', user.s, user.n);
+    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', resolveProperName(user.s), user.n);
     console.log("current user: " + JSON.stringify(user));
     attributes.dialogState = DIALOG_STATE.USER_CONFIRMATION;
     attributes.userinfo = user;
@@ -336,9 +337,17 @@ function checkForNextUser(handlerInput) {
   }
 }
 
+function resolveProperName(user_name) {
+  console.log("twitter_to_alexa properties: " + JSON.stringify(twitter_to_alexa));
+  console.log("user slug:" + user_name);
+  if(twitter_to_alexa && twitter_to_alexa[user_name])
+    return twitter_to_alexa[user_name];
+  else
+    return user_name;
+}
+
 async function sendTipViaTipBot(handlerInput, amount, user) {
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-  var locale = handlerInput.requestEnvelope.request.locale;
 
   var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
   if(!accessToken) {
@@ -385,7 +394,7 @@ function handleSentTipResponse(handlerInput, response, amount, username) {
 
   if(response && response.data && response.data.code) {
     switch(response.data.code) {
-      case 200: return requestAttributes.t('TIP_SENT_RESPONSE', localizeAmount(locale,amount), username);
+      case 200: return requestAttributes.t('TIP_SENT_RESPONSE', localizeAmount(locale,amount), resolveProperName(username));
       case 300: return requestAttributes.t('RESPONSE_ERROR_300');
       case 400: return requestAttributes.t('RESPONSE_ERROR_400');
       case 401: return requestAttributes.t('RESPONSE_ERROR_401_WITH_AMOUNT', amount);
@@ -547,7 +556,7 @@ function processTipConfirmation(handlerInput) {
   //we have a valid number -> process tip confirmation
   var amount = attributes.amountToTip;
   var user = attributes.userinfo;
-  var speechOutput = requestAttributes.t('TIP_CONFIRMATION', localizeAmount(locale,amount), user.u);
+  var speechOutput = requestAttributes.t('TIP_CONFIRMATION', localizeAmount(locale,amount), resolveProperName(user.s));
 
   attributes.dialogState = DIALOG_STATE.TIP_CONFIRMATION;
   attributes.lastQuestion = speechOutput;
