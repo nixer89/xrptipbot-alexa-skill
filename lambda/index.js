@@ -317,7 +317,7 @@ function checkForNextUser(handlerInput) {
 
   if(attributes.possibleUsers && attributes.possibleUsers.length > 0) {
     var user = attributes.possibleUsers[0];
-    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', user.u, user.s, user.n);
+    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', user.s, user.n);
     console.log("current user: " + JSON.stringify(user));
     attributes.dialogState = DIALOG_STATE.USER_CONFIRMATION;
     attributes.userinfo = user;
@@ -357,7 +357,7 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
         console.log("amount is valid");
         var sendTipResponse = await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
-        var speechOutput = handleSentTipResponse(handlerInput, sendTipResponse, amount, user.u);
+        var speechOutput = handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
         return handlerInput.responseBuilder
           .speak(speechOutput)
           .getResponse();
@@ -498,7 +498,7 @@ async function handleUser(handlerInput) {
         if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
-          possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.u, user_slot.value));
+          possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.s, user_slot.value));
           possibleUsers.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
 
           attributes.possibleUsers = possibleUsers;
@@ -564,10 +564,20 @@ function isDialogState(handlerInput, checkDialogState) {
 }
 
 function localizeAmount(locale, amount) {
-  if(locale && locale.startsWith('de'))
-    return (amount+"").replace('.',',');
-  else
-    return (amount+"");
+  var outputAmount = amount+"";
+
+  if(amount) {
+    var splitAmount = (amount+"").split('.');
+    outputAmount = ""+splitAmount[0];
+
+    if(splitAmount[1]) {
+      var pointOrComma = (locale && locale.startsWith('de')) ? ',' : '.'
+      outputAmount+="<say-as interpret-as=\"spell-out\">"+pointOrComma+splitAmount[1]+"</say-as>";
+    }
+  }
+
+  console.log("output amount: " + outputAmount);
+  return outputAmount;
 }
 
 const HelpHandler = {

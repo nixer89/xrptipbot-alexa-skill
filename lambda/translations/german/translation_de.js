@@ -1,7 +1,7 @@
 const deData = {
     translation: {
       SKILL_NAME: 'XRP Tip Bott',
-      WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an andere User senden. Wie kann ich dir helfen? ',
+      WELCOME_MESSAGE: 'Willkommen zum XRP Tip Bott Skill. Du kannst deinen Kontostand abfragen oder Tips an deine Kontakte aus der XRP Tip Bott App senden. Wie kann ich dir helfen? ',
       ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App. ',
       ACCOUNT_BALANCE: 'Dein XRP Tip Bott Kontostand ist: %s XRP. Wie kann ich dir sonst noch helfen? ',
       ASK_FOR_AMOUNT: 'Wie viele XRP willst du senden? ',
@@ -12,7 +12,7 @@ const deData = {
       ASK_FOR_AMOUNT_FALLBACK: 'Sorry, das habe ich leider nicht verstanden. Bitte wiederhole den Betrag. ',
       ASK_FOR_USER: 'An welchen User willst du deinen Tipp senden? ',
       ASK_FOR_USER_FAIL: 'Sorry, ich habe den User nicht verstanden. Bitte wiederhole. ',
-      ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s aka %s von %s? ',
+      ASK_FOR_USER_CONFIRMATION: 'Meinst du den user %s von %s? ',
       ASK_FOR_USER_FALLBACK: 'Das habe ich leider nicht verstanden. Bitte sage: an ... und dann den Usernamen. ',
       TIP_CONFIRMATION: 'Du willst %s XRP an den User %s senden, korrekt? ',
       TIP_SENT_RESPONSE: '%s XRP wurden an %s gesendet. ',
