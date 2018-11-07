@@ -445,7 +445,7 @@ function handleAmount(handlerInput) {
   
   try {
     //check if we have numbers
-    var wholeNumber = !attributes.numberAlexaUnderstood ? checkNumberSlots(handlerInput) : attributes.numberAlexaUnderstood;
+    var wholeNumber = !attributes.amountToTip ? checkNumberSlots(handlerInput) : attributes.amountToTip;
     var speechOutput = "";
 
     console.log("wholeNumber: " + wholeNumber);
@@ -495,9 +495,16 @@ async function handleUser(handlerInput) {
 
   //did not understand any user name -> reprompt user name!
   if(!user_slot || !user_slot.value || user_slot.value == '?') {
+    var output = requestAttributes.t('ASK_FOR_USER_FAIL');
+
+    //if new session/intent, ask for user instead of failed user!
+    if(isDialogState(handlerInput, DIALOG_STATE.NONE))
+      output = requestAttributes.t('ASK_FOR_USER');
+
     attributes.dialogState = DIALOG_STATE.USER_SELECTION;
     handlerInput.attributesManager.setSessionAttributes(attributes);
-    return {checkNextUser: false, speechOutput: requestAttributes.t('ASK_FOR_USER_FAIL'), reprompt:true, withAccountCard: false}
+
+    return {checkNextUser: false, speechOutput: output, reprompt:true, withAccountCard: false}
   }
 
   try {
@@ -629,6 +636,7 @@ const FallbackHandler = {
               .reprompt(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .getResponse();
     } else if(isDialogState(handlerInput, DIALOG_STATE.AMOUNT_SELECTION)) {
+      //we have a problem here... since user = AMAZON.SEARCHQUERY, also numbers can be determinded as user_name -> so we are in amount selection but the skill thinks he has a user here...
       return handlerInput.responseBuilder
               .speak(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))
               .reprompt(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))
