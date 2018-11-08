@@ -1,5 +1,5 @@
 # XRPTipBot-Skill Overview
-The XRPTipBot-Skill lets you check your XRP TipBot-Balance and you are also able to send tips to your contacts within a few seconds. All you need is your voice!
+The XRPTipBot-Skill lets you check your XRP TipBot balance and send tips to your TipBot contacts within a few seconds. All you need is your voice!
 
 # XRPTipBot-Skill Details
 
@@ -20,13 +20,13 @@ Alexa will then guide you through the dialog for sending a tip to one of your co
 
 IMPORTANT NOTICE:
 Due to some limitations of the Alexa voice service, you are only able to give one piece of information at a time:
-Whether the amount OR the Username.
-When providing both, the amount AND the user name, alexa will ask you again for the user name later in the dialog.
+the amount OR the username.
+When providing both, the amount AND the username, alexa will ask you for the username again later in the dialog.
 It is recommended to start the dialog with the username. Alexa will ask your for the amount you want to send afterwards.
 I hope this will be fixed in the future by Amazon.
 
 
-Have fun and enjoy the skill!
+Have fun and enjoy the Skill!
 
 Feedback always welcome:
 XRPTipBotAlexa@gmail.com
