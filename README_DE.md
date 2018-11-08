@@ -13,14 +13,16 @@ Um den Kontostand abzufragen, kannst du folgende Befehle nutzen:
 ## Einen Tip an einen Freund senden
 Um XRP-Tips an einen deiner Kontakte zu senden, kannst du einfach sagen:
 - "sende XRP"
-- "sende XPR an {user_name}"
+- "sende XPR an 'UserName'"
 - "sende 0,01 XRP"
 
 Alexa wird dich dann durch den Dialog zum Senden einen XRP Tips an einen deiner Kontakte führen.
 
 WICHTIGE INFORMATION:
-Aufgrund von Einschränkungen beim Benutzen des Alexa Sprachdienstes kann man nur eine Information für das Senden von XRP angeben. Entweder den Betrag ODER den USER_NAMEN.
+Aufgrund von Einschränkungen beim Benutzen des Alexa Sprachdienstes kann man nur eine Information für das Senden von XRP angeben.
+Entweder den Betrag ODER den USER_NAMEN.
 Wenn du den Betrag UND den Usernamen angibst, wird dich Alexa später im Dialog noch einmal nach dem Usernamen fragen.
+Es wird empfohlen, den Dialog mit dem Usernamen zu starten: "sende einen Tipp an 'UserName'."
 Ich hoffe dies wird von Amazon bald gefixt.
 
 Viel Spaß mit dem Skill!

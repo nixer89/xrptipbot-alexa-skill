@@ -74,8 +74,8 @@ const GetBalanceIntent = {
           if(balance && balance.data && balance.data.balance && balance.data.balance.XRP) {
             console.log("localized amount: " + localizeAmount(locale,balance.data.balance.XRP));
             return handlerInput.responseBuilder
-                .speak(requestAttributes.t('ACCOUNT_BALANCE', localizeAmount(locale,balance.data.balance.XRP)))
-                .reprompt(requestAttributes.t('ACCOUNT_BALANCE', localizeAmount(locale,balance.data.balance.XRP)))
+                .speak(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
+                .reprompt(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
                 .getResponse();
           } else if(balance && balance.error) {
             //invalid access token
@@ -318,7 +318,7 @@ function checkForNextUser(handlerInput) {
 
   if(attributes.possibleUsers && attributes.possibleUsers.length > 0) {
     var user = attributes.possibleUsers[0];
-    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', resolveProperName(user.s), user.n);
+    var speechOutput = requestAttributes.t('ASK_FOR_USER_CONFIRMATION', {user: resolveProperName(user.s), network: user.n});
     console.log("current user: " + JSON.stringify(user));
     attributes.dialogState = DIALOG_STATE.USER_CONFIRMATION;
     attributes.userinfo = user;
@@ -394,10 +394,10 @@ function handleSentTipResponse(handlerInput, response, amount, username) {
 
   if(response && response.data && response.data.code) {
     switch(response.data.code) {
-      case 200: return requestAttributes.t('TIP_SENT_RESPONSE', localizeAmount(locale,amount), resolveProperName(username));
+      case 200: return requestAttributes.t('TIP_SENT_RESPONSE', {amount:localizeAmount(locale,amount), user: resolveProperName(username)});
       case 300: return requestAttributes.t('RESPONSE_ERROR_300');
       case 400: return requestAttributes.t('RESPONSE_ERROR_400');
-      case 401: return requestAttributes.t('RESPONSE_ERROR_401_WITH_AMOUNT', amount);
+      case 401: return requestAttributes.t('RESPONSE_ERROR_401_WITH_AMOUNT', {amount: localizeAmount(locale,amount)});
       case 403: return requestAttributes.t('RESPONSE_ERROR_403');
       case 404: return requestAttributes.t('RESPONSE_ERROR_404');
       case 500: return requestAttributes.t('RESPONSE_ERROR_500');
@@ -563,7 +563,7 @@ function processTipConfirmation(handlerInput) {
   //we have a valid number -> process tip confirmation
   var amount = attributes.amountToTip;
   var user = attributes.userinfo;
-  var speechOutput = requestAttributes.t('TIP_CONFIRMATION', localizeAmount(locale,amount), resolveProperName(user.s));
+  var speechOutput = requestAttributes.t('TIP_CONFIRMATION', {amount:localizeAmount(locale,amount), user: resolveProperName(user.s)});
 
   attributes.dialogState = DIALOG_STATE.TIP_CONFIRMATION;
   attributes.lastQuestion = speechOutput;
