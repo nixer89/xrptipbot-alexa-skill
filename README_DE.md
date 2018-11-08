@@ -25,8 +25,11 @@ Ich hoffe dies wird von Amazon bald gefixt.
 
 Viel Spaß mit dem Skill!
 
+Feedback wird gerne gesehen:
+XRPTipBotAlexa@gmail.com
 
-Disclosure:
+
+Haftungsausschluss:
 Dieser Skill ist kein offizielles Produkt des XRPTipBot-Entwickler. (https://www.xrptipbot.com)
 Der Skill nutzt die offene API des XRP Tip-Bot um Tips zu senden und deinen Kontostand abzufragen.
 Es wird keine Haftung für verlorene XRP übernommen.

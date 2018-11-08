@@ -11,7 +11,7 @@ To check your balance, use one of the following commands:
 
 ## Sending tips to your contacts
 To send a tip to one of your contacts, just say:
-- "Alexa, tell Tip Bot to send 0.01 XRP"
+- "Alexa, tell Tip Bot to send a tip to {user_name}"
 - "send XRP"
 - "send XRP to {user_name}"
 - "send 0.01 XRP"
@@ -22,15 +22,16 @@ IMPORTANT NOTICE:
 Due to some limitations of the Alexa voice service, you are only able to give one piece of information at a time:
 Whether the amount OR the Username.
 When providing both, the amount AND the user name, alexa will ask you again for the user name later in the dialog.
+It is recommended to start the dialog with the username. Alexa will ask your for the amount you want to send afterwards.
 I hope this will be fixed in the future by Amazon.
 
 
 Have fun and enjoy the skill!
 
 Feedback always welcome:
-MeinLottoAlexa@gmail.com
+XRPTipBotAlexa@gmail.com
 
-Disclosure:
+Disclaimer:
 This skill is not an official product of the XRPTipBot (https://www.xrptipbot.com).
 The skill uses the open API of the XRP TipBot to send tips and to check your balance.
 There is no liability for lost XRP.
