@@ -55,11 +55,41 @@
                         }
                     ],
                     "samples": [
-                        "sende XRP an {user_name}",
-                        "sende {number_a} komma {number_b} {number_c} {number_d} XRP",
-                        "sende {number_a} komma {number_b} {number_c} XRP",
-                        "sende {number_a} komma {number_b} XRP",
-                        "sende {number_a} XRP"
+                        "sende xrp",
+                        "sende x. r. p.",
+                        "sende einen tipp",
+                        "sende einen Tipp an {user_name} ",
+                        "sende x. r. p. an {user_name} ",
+                        "sende xrp an {user_name}",
+                        "sende {number_a} komma {number_b} {number_c} {number_d} x. r. p.",
+                        "sende {number_a} komma {number_b} {number_c} x. r. p.",
+                        "sende {number_a} komma {number_b} x. r. p.",
+                        "sende {number_a} x. r. p.",
+                        "sende {number_a} komma {number_b} {number_c} {number_d} ",
+                        "sende {number_a} komma {number_b} {number_c} ",
+                        "sende {number_a} komma {number_b} ",
+                        "sende {number_a} ",
+                        "sende {number_a} komma {number_b} {number_c} {number_d} xrp",
+                        "sende {number_a} komma {number_b} {number_c} xrp",
+                        "sende {number_a} komma {number_b} xrp",
+                        "sende {number_a} xrp",
+						"tippe xrp",
+                        "tippe x. r. p.",
+                        "tippe x. r. p. an {user_name} ",
+                        "tippe an {user_name}",
+						"tippe xrp an {user_name}",
+                        "tippe {number_a} komma {number_b} {number_c} {number_d} x. r. p.",
+                        "tippe {number_a} komma {number_b} {number_c} x. r. p.",
+                        "tippe {number_a} komma {number_b} x. r. p.",
+                        "tippe {number_a} x. r. p.",
+                        "tippe {number_a} komma {number_b} {number_c} {number_d} ",
+                        "tippe {number_a} komma {number_b} {number_c} ",
+                        "tippe {number_a} komma {number_b} ",
+                        "tippe {number_a} ",
+                        "tippe {number_a} komma {number_b} {number_c} {number_d} xrp",
+                        "tippe {number_a} komma {number_b} {number_c} xrp",
+                        "tippe {number_a} komma {number_b} xrp",
+                        "tippe {number_a} xrp"
                     ]
                 },
                 {
@@ -91,14 +121,18 @@
                         }
                     ],
                     "samples": [
-                        "{number_a} komma {number_b} {number_c} {number_d}  XRP",
-                        "{number_a} komma {number_b} {number_c}  XRP",
-                        "{number_a} komma {number_b} XRP",
-                        "{number_a}  XRP",
-                        "{number_a} komma {number_b} {number_c} {number_d} ",
-                        "{number_a} komma {number_b} {number_c} ",
+                        "{number_a} ",
                         "{number_a} komma {number_b} ",
-                        "{number_a} "
+                        "{number_a} komma {number_b} {number_c} ",
+                        "{number_a} komma {number_b} {number_c} {number_d} ",
+                        "{number_a} x. r. p.",
+                        "{number_a} komma {number_b} x. r. p.",
+                        "{number_a} komma {number_b} {number_c} x. r. p.",
+                        "{number_a} komma {number_b} {number_c} {number_d} x. r. p.",
+                        "{number_a} xrp",
+                        "{number_a} komma {number_b} xrp",
+                        "{number_a} komma {number_b} {number_c} xrp",
+                        "{number_a} komma {number_b} {number_c} {number_d} xrp"
                     ]
                 },
                 {
@@ -110,6 +144,7 @@
                         }
                     ],
                     "samples": [
+                        "sende an {user_name}",
                         "tippe XRP an {user_name}",
                         "suche nach {user_name}",
                         "an {user_name}"

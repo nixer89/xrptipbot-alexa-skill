@@ -6,6 +6,7 @@ var i18n = require('i18next');
 var sprintf = require('i18next-sprintf-postprocessor');
 var fetch = require('node-fetch');
 var levenshtein = require('fast-levenshtein');
+var stringSimilarity = require('string-similarity');
 
 //language properties
 var german_properties = require('./translations/german/translation_de');
@@ -445,7 +446,7 @@ function handleAmount(handlerInput) {
   
   try {
     //check if we have numbers
-    var wholeNumber = !attributes.amountToTip ? checkNumberSlots(handlerInput) : attributes.amountToTip;
+    var wholeNumber = (!attributes.amountToTip || isNaN(attributes.amountToTip)) ? checkNumberSlots(handlerInput) : attributes.amountToTip;
     var speechOutput = "";
 
     console.log("wholeNumber: " + wholeNumber);
@@ -514,11 +515,16 @@ async function handleUser(handlerInput) {
         if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
-          possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.s, user_slot.value));
+          possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
           possibleUsers.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
+          console.log("possible users sorted with levenshtein: " + JSON.stringify(possibleUsers));
+
+          var possibleUsersSim = userinfo.data;
+          possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          possibleUsersSim.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
+          console.log("possible users sorted with stringSimilarity: " + JSON.stringify(possibleUsersSim));
 
           attributes.possibleUsers = possibleUsers;
-          console.log("possible users sorted: " + JSON.stringify(attributes.possibleUsers));
           handlerInput.attributesManager.setSessionAttributes(attributes);
           console.log("attributes set, returning check of next user");
           return {checkNextUser: true, speechOutput: ""};

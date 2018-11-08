@@ -1,0 +1,13 @@
+Public Name:
+XRPTipBot
+
+One Sentence Description:
+- See README.md
+
+Example Phrases:
+1. Alexa, launch tip bot
+2. what is my balance?
+3. Alexa, tell tip bot to send XRP to "UserName"
+
+Keywords:
+XRP, XRPTipBot, TipBot

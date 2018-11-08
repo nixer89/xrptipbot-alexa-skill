@@ -5,4 +5,5 @@ module.exports = {
     "haydentiffany": "hayden tiffany",
     "JoelKatz": "Joel Katz",
     "marcus_treacher": "marcus treacher",
+    "potpiejimmy": "pot pie jimmy"
 }
