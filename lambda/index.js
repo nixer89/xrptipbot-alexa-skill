@@ -1,5 +1,3 @@
-// Alexa Fact Skill - Sample for Beginners
-/* eslint no-use-before-define: 0 */
 // sets up dependencies
 var Alexa = require('ask-sdk-core');
 var i18n = require('i18next');
@@ -516,8 +514,10 @@ async function handleUser(handlerInput) {
         if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
-          //possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
-          possibleUsers.forEach(user => user.distance = eudex.distance(user_slot.value.toLowerCase(),user.s.toLowerCase()));
+          possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          console.log("start getting distance");
+          //possibleUsers.forEach(user => { user.distance = eudex.distance(user_slot.value.toLowerCase(),user.s.toLowerCase())});
+          console.log("end getting distance");
           possibleUsers.sort((userA, userB) => userA.distance - userB.distance);
           console.log("possible users sorted with eudex distance: " + JSON.stringify(possibleUsers));
 
