@@ -5,6 +5,7 @@ Um diesen Skill nutzen zu können, benötigst du folgende Vorraussetzungen:
 
 - einen XRP Tip Bot Account
 - verfügbarer XRP Tip Bot Kontostand von mehr als 0 XRP
+- Kontakte in deiner XRP Tip Bot App
 - einen Amazon Account
 - ein Alexa fähiges Gerät
 - Alexa muss mit eine der folgenden Sprachen eingestellt sein: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
@@ -25,7 +26,7 @@ Um XRP-Tips an einen deiner Kontakte zu senden, kannst du einfach sagen:
 - "sende XPR an 'UserName'"
 - "sende 0,01 XRP"
 
-Alexa wird dich dann durch den Dialog zum Senden einen XRP Tips an einen deiner Kontakte führen.
+Alexa wird dich dann durch den Dialog zum Senden eines XRP Tips an einen deiner Kontakte führen.
 
 WICHTIGE INFORMATION:
 Aufgrund von Einschränkungen beim Benutzen des Alexa Sprachdienstes kann man nur eine Information für das Senden von XRP angeben.

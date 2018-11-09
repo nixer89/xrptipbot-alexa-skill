@@ -5,6 +5,7 @@ In order to use this skill, you need to have all of the following requirements:
 
 - XRP Tip Bot account
 - available XRP Tip Bot balance (balance > 0)
+- contacts in your XRP Tip Bot App
 - an Amazon account
 - an Alexa enabled device
 - running Alexa with one of the following locale settings: de-DE, en-US, en-CA, en-IN, en-GB, en-AU

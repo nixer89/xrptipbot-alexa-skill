@@ -170,10 +170,12 @@
                         }
                     ],
                     "samples": [
-                        "send to {user_name}",
-                        "tip to {user_name}",
-                        "give xrp to {user_name}",
-                        "to {user_name}"
+                        "search for {user_name}",
+                        "look for {user_name}",
+                        "check for {user_name}",
+                        "search for user {user_name}",
+                        "look for user {user_name}",
+                        "check for user {user_name}"
                     ]
                 }
             ],

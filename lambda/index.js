@@ -6,7 +6,8 @@ var i18n = require('i18next');
 var sprintf = require('i18next-sprintf-postprocessor');
 var fetch = require('node-fetch');
 var levenshtein = require('fast-levenshtein');
-var stringSimilarity = require('string-similarity');
+var eudex = require('talisman/metrics/distance/eudex');
+var Long = require('long');
 
 //language properties
 var german_properties = require('./translations/german/translation_de');
@@ -18,7 +19,7 @@ const BASE_URL = process.env.BASE_URL;
 var DIALOG_STATE = {
   NONE: 0,
   AMOUNT_SELECTION: 2,
-  //AMOUNT_CONFIRMATION: 3,
+  AMOUNT_CONFIRMATION: 3,
   USER_SELECTION: 4,
   USER_CONFIRMATION: 5,
   TIP_CONFIRMATION: 6,
@@ -515,14 +516,15 @@ async function handleUser(handlerInput) {
         if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
-          possibleUsers.forEach(user => user.levenshtein = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
-          possibleUsers.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
-          console.log("possible users sorted with levenshtein: " + JSON.stringify(possibleUsers));
+          //possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          possibleUsers.forEach(user => user.distance = eudex.distance(user_slot.value.toLowerCase(),user.s.toLowerCase()));
+          possibleUsers.sort((userA, userB) => userA.distance - userB.distance);
+          console.log("possible users sorted with eudex distance: " + JSON.stringify(possibleUsers));
 
-          var possibleUsersSim = userinfo.data;
-          possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_slot.value.toLowerCase()));
-          possibleUsersSim.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
-          console.log("possible users sorted with stringSimilarity: " + JSON.stringify(possibleUsersSim));
+          //var possibleUsersSim = userinfo.data;
+          //possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          //possibleUsersSim.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
+          //console.log("possible users sorted with stringSimilarity: " + JSON.stringify(possibleUsersSim));
 
           attributes.possibleUsers = possibleUsers;
           handlerInput.attributesManager.setSessionAttributes(attributes);
@@ -642,7 +644,6 @@ const FallbackHandler = {
               .reprompt(requestAttributes.t('ANSWER_YES_NO') + attributes.lastQuestion)
               .getResponse();
     } else if(isDialogState(handlerInput, DIALOG_STATE.AMOUNT_SELECTION)) {
-      //we have a problem here... since user = AMAZON.SEARCHQUERY, also numbers can be determinded as user_name -> so we are in amount selection but the skill thinks he has a user here...
       return handlerInput.responseBuilder
               .speak(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))
               .reprompt(requestAttributes.t('ASK_FOR_AMOUNT_FALLBACK'))

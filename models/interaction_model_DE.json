@@ -144,10 +144,8 @@
                         }
                     ],
                     "samples": [
-                        "sende an {user_name}",
-                        "tippe XRP an {user_name}",
                         "suche nach {user_name}",
-                        "an {user_name}"
+                        "checke nach {user_name}"
                     ]
                 }
             ],
