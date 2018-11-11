@@ -1,7 +1,6 @@
+//List of user names which Alexa should pronounce different coz it would sound weird!
 module.exports = {
     "XRPTrump": "XRP Trump",
-    "WietseWind": "Wietse Wind",
     "nixerFFM": "nixer FFM",
-    "haydentiff": "hayden tiffany",
-    "JoelKatz": "Joel Katz"
+    "haydentiff": "haydentiff, a.k.a. Tiffany Hayden"
 }

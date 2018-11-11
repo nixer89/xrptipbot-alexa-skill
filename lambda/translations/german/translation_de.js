@@ -5,7 +5,6 @@ const deData = {
       ACCOUNT_LINKING: 'Du musst erst deinen Alexa skill mit dem XRP Tip Bott verbinden. Bitte schaue dazu in die Alexa App. ',
       ACCOUNT_BALANCE: 'Dein XRP Tip Bott Kontostand ist: %(amount)s XRP. Wie kann ich dir sonst noch helfen? ',
       ASK_FOR_AMOUNT: 'Wie viele XRP willst du senden? ',
-      ASK_FOR_AMOUNT_MIN: 'Es müssen mindestens 0,001 XRP gesendet werden. ',
       ASK_FOR_AMOUNT_MAX: 'Es können maximal 20 XRP gesendet werden. ',
       ASK_FOR_AMOUNT_FAIL: 'Sorry, ich habe die Zahl nicht verstanden. Bitte wiederhole. ',
       ASK_FOR_AMOUNT_CONFIRMATION: '%(amount)s XRP. Richtig? ',
