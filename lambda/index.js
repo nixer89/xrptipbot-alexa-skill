@@ -388,13 +388,22 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
   }
 }
 
-function handleSentTipResponse(handlerInput, response, amount, username) {
+async function handleSentTipResponse(handlerInput, response, amount, username) {
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
   var locale = handlerInput.requestEnvelope.request.locale;
 
   if(response && response.data && response.data.code) {
     switch(response.data.code) {
-      case 200: return requestAttributes.t('TIP_SENT_RESPONSE', {amount:localizeAmount(locale,amount), user: resolveProperName(username)});
+      case 200: {
+        console.log("Amount of " + amount + " successfully sent to " + username);
+        //save info how much XRP and how many tips wer sent.
+        const persistentAttributes = await handlerInput.attributesManager.getPersistentAttributes();
+        persistentAttributes.overallAmountSent += amount;
+        persistentAttributes.overallTipsSent++;
+        handlerInput.attributesManager.savePersistentAttributes();
+
+        return requestAttributes.t('TIP_SENT_RESPONSE', {amount:localizeAmount(locale,amount), user: resolveProperName(username)});
+      } 
       case 300: return requestAttributes.t('RESPONSE_ERROR_300');
       case 400: return requestAttributes.t('RESPONSE_ERROR_400');
       case 401: return requestAttributes.t('RESPONSE_ERROR_401_WITH_AMOUNT', {amount: localizeAmount(locale,amount)});
@@ -766,6 +775,8 @@ exports.handler = skillBuilder
   )
   .addRequestInterceptors(LocalizationInterceptor)
   .addErrorHandlers(ErrorHandler)
+  .withTableName('XRPTipBot')
+  .withAutoCreateTable(true)
   .lambda();
 
 // translations
