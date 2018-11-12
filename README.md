@@ -57,6 +57,7 @@ Translation support:
 https://twitter.com/TahiGichigi
 
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
+
 Official TipBot-Website: https://www.xrptipbot.com
 
 # TODO
