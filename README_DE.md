@@ -58,8 +58,3 @@ https://twitter.com/WietseWind
 
 Quellen: https://github.com/nixer89/xrptipbot-alexa-skill
 Offizielle XRPTipBot-Webseite: https://www.xrptipbot.com
-
-
-# TODO
-- show notification if a tip was sent to you
-- add function to get last user you sent a tip to + amount

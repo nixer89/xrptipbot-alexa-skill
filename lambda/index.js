@@ -427,7 +427,8 @@ async function setStatisticsData(handlerInput, amount) {
 
   console.log("setting statistics data: " + JSON.stringify(persistentAttributes));
   handlerInput.attributesManager.setPersistentAttributes(persistentAttributes);
-  await handlerInput.attributesManager.savePersistentAttributes();
+  //do not wait for saving statistics to DB, just let it run in the background
+  handlerInput.attributesManager.savePersistentAttributes();
   console.log("statistics data saved");
 }
 
