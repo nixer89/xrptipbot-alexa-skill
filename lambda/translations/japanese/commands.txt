@@ -1,0 +1,15 @@
+﻿start tipbot:
+
+tipbotを起動して
+
+ask for balance:
+
+残高は幾らですか
+
+send a tip:
+
+チップを送信します
+
+send some xrp:
+
+XRPを送信します
