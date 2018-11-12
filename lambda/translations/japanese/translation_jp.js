@@ -32,6 +32,8 @@ const jpData = {
         RESPONSE_ERROR_500: '宛先に指定したアドレスは無効です。この問題を報告してください。',
         RESPONSE_ERROR_300: '申し訳ありません。ご自分にチップを送信することはできません。',
         RESPONSE_ERROR_400: '宛先に指定したユーザーは XRP Tip Botを利用することができません. ',
+
+        API_NOT_AVAILABLE: 'Sorry, but the XRPTipBot API is currently not available. Please try again later.'
     },
 };
   

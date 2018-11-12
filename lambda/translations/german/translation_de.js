@@ -32,6 +32,8 @@ const deData = {
       RESPONSE_ERROR_500: 'Die Empfänger Addresse ist nicht gültig. Bitte sende das Problem an den Entwickler. ',
       RESPONSE_ERROR_300: 'Du kannst keine XRP zu dir selbst senden. ',
       RESPONSE_ERROR_400: 'Der User, an den du den Tip senden willst, hat den XRP Tip Bot deaktiviert. ',
+
+      API_NOT_AVAILABLE: 'Sorry, die XRPTipBott API kann gerade nicht erreicht werden. Bitte versuche es später nocheinmal.'
     },
 };
   

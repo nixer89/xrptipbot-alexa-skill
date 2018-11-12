@@ -3,6 +3,7 @@ var Alexa = require('ask-sdk');
 var i18n = require('i18next');
 var sprintf = require('i18next-sprintf-postprocessor');
 var fetch = require('node-fetch');
+var isReachable = require('is-reachable');
 var levenshtein = require('fast-levenshtein');
 var eudex = require('talisman/metrics/distance/eudex');
 var Long = require('long');
@@ -70,23 +71,30 @@ const GetBalanceIntent = {
       
       console.log("GetBalanceIntent: " + JSON.stringify(handlerInput));
       try {
-          let balance = await invokeBackend(BASE_URL+"/action:balance/", {method: "POST", body: JSON.stringify({"token": accessToken})});
-          console.log("balance response: " + JSON.stringify(balance));
-          if(balance && balance.data && balance.data.balance && balance.data.balance.XRP) {
-            console.log("localized amount: " + localizeAmount(locale,balance.data.balance.XRP));
-            return handlerInput.responseBuilder
-                .speak(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
-                .reprompt(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
+          if(await isReachable(BASE_URL)) {        
+            let balance = await invokeBackend(BASE_URL+"/action:balance/", {method: "POST", body: JSON.stringify({"token": accessToken})});
+            console.log("balance response: " + JSON.stringify(balance));
+            if(balance && balance.data && balance.data.balance && balance.data.balance.XRP) {
+              console.log("localized amount: " + localizeAmount(locale,balance.data.balance.XRP));
+              return handlerInput.responseBuilder
+                  .speak(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
+                  .reprompt(requestAttributes.t('ACCOUNT_BALANCE', {amount: localizeAmount(locale,balance.data.balance.XRP)}))
+                  .getResponse();
+            } else if(balance && balance.error) {
+              //invalid access token
+              return handlerInput.responseBuilder
+                .speak(requestAttributes.t('ACCOUNT_LINKING'))
+                .withLinkAccountCard()
                 .getResponse();
-          } else if(balance && balance.error) {
-            //invalid access token
+            }else {
+              return handlerInput.responseBuilder
+                .speak(requestAttributes.t('ERROR_MESSAGE'))
+                .getResponse();
+            }
+          } else {
+            console.log(BASE_URL + " cannot be reached!");
             return handlerInput.responseBuilder
-              .speak(requestAttributes.t('ACCOUNT_LINKING'))
-              .withLinkAccountCard()
-              .getResponse();
-          }else {
-            return handlerInput.responseBuilder
-              .speak(requestAttributes.t('ERROR_MESSAGE'))
+              .speak(requestAttributes.t('API_NOT_AVAILABLE'))
               .getResponse();
           }
       } catch(err) {
@@ -365,12 +373,19 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
       //found single user -> repromt to send
       if(amount <= 20) { //make sure to not send too much in testing! 
         console.log("amount is valid");
-        var sendTipResponse = await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
+        if(await isReachable(BASE_URL)) {
+          var sendTipResponse = await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
-        var speechOutput = await handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
-        return handlerInput.responseBuilder
-          .speak(speechOutput)
-          .getResponse();
+          var speechOutput = await handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
+          return handlerInput.responseBuilder
+            .speak(speechOutput)
+            .getResponse();
+        } else {
+          console.log(BASE_URL + " cannot be reached!");
+          return handlerInput.responseBuilder
+            .speak(requestAttributes.t('API_NOT_AVAILABLE'))
+            .getResponse();
+        }
       } else {
         return handlerInput.responseBuilder
           .speak(requestAttributes.t('ASK_FOR_AMOUNT_MAX'))
@@ -536,6 +551,7 @@ async function handleUser(handlerInput) {
 
   try {
     if(!attributes.possibleUsers) {
+      if(await isReachable(BASE_URL)) {    
         let userinfo = await invokeBackend(BASE_URL+"/action:contacts/", {method: "POST", body: JSON.stringify({token: accessToken})});
         console.log("userinfo: " + JSON.stringify(userinfo));
         if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
@@ -560,6 +576,12 @@ async function handleUser(handlerInput) {
         } else {
           return {checkNextUser: false, speechOutput: requestAttributes.t('NO_USER_FOUND')};
         }
+      } else {
+        console.log(BASE_URL + " cannot be reached!");
+        return handlerInput.responseBuilder
+          .speak(requestAttributes.t('API_NOT_AVAILABLE'))
+          .getResponse();
+      }
     } else {
       return {checkNextUser: false, speechOutput: requestAttributes.t('ERROR_MESSAGE')};
     }
