@@ -832,8 +832,8 @@ const languageStrings = {
   'en-AU': english_properties.enAUData(),
   'en-CA': english_properties.enCAData(),
   'en-IN': english_properties.enINData(),
-  'jp': japanese_properties.jpData(),
-  'jp-JP': japanese_properties.jpJPData()
+  'ja': japanese_properties.jpData(),
+  'ja-JP': japanese_properties.jpJPData()
 };
 
 function invokeBackend(url, options) {
