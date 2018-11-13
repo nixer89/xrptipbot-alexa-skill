@@ -43,20 +43,10 @@ const esesData = {
     },
 };
   
-const esmxData = {
-    translation: {
-        SKILL_NAME: 'XRP Tip Bot',
-    },
-};
-
 exports.esData = function() {
     return esData;
 }
 
 exports.esESData = function() {
     return esesData;
-}
-
-exports.esMXData = function() {
-    return esmxData;
 }
