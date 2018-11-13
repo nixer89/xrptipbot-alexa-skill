@@ -23,10 +23,10 @@
                     "name": "GetBalanceIntent",
                     "slots": [],
                     "samples": [
+                        "残高は幾らですか",
                         "for my XRP balance",
                         "How many XRP do I have",
-                        "What is my XRP Tip Bot balance",
-                        "What is my balance"
+                        "What is my XRP Tip Bot balance"
                     ]
                 },
                 {
@@ -54,9 +54,9 @@
                         }
                     ],
                     "samples": [
-                        "send some xrp",
-                        "send some x. r. p.",
-                        "send a tip",
+                        "XRPを送信します",
+                        "X.R.Pを送信します",
+                        "チップを送信します",
                         "send a tip to {user_name}",
                         "send xrp to {user_name}",
                         "send x. r. p. to {user_name}",
