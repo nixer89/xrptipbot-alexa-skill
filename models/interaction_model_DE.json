@@ -59,6 +59,8 @@
                         "sende x. r. p.",
                         "sende einen tipp",
                         "sende einen Tipp an {user_name} ",
+                        "sende eine Spende",
+                        "sende eine Spende an {user_name}",
                         "sende x. r. p. an {user_name} ",
                         "sende xrp an {user_name}",
                         "sende {number_a} komma {number_b} {number_c} {number_d} x. r. p.",
