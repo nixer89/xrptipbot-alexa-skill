@@ -57,6 +57,8 @@
                         "send some xrp",
                         "send some x. r. p.",
                         "send a tip",
+                        "send a donation",
+                        "send a donation to {user_name}",
                         "send a tip to {user_name}",
                         "send xrp to {user_name}",
                         "send x. r. p. to {user_name}",

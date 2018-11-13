@@ -2,5 +2,6 @@
 module.exports = {
     "XRPTrump": "XRP Trump",
     "nixerFFM": "nixer FFM",
-    "haydentiff": "haydentiff, a.k.a. Tiffany Hayden"
+    "haydentiff": "haydentiff, a.k.a. Tiffany Hayden",
+    "StJude": "Saint Jude - Children's research hospital"
 }
