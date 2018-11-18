@@ -1,65 +1,63 @@
-# XRPTipBot-Skill Overview
-The XRPTipBot-Skill lets you check your XRP TipBot balance and send tips to your TipBot contacts within a few seconds. All you need is your voice!
+# Visión General del XRPTipBot-Skill 
+El XRPTipBot-Skill te permite comprobar tu saldo en XRP TipBot y enviar propinas a tus contactos de tu lista TipBot en unos pocos segundos. ¡Sólo usando tu voz!
 
-In order to use this skill, you need to have all of the following requirements:
+Para poder usar esta herramienta, debes cumplir los siguientes requisitos:
 
-- XRP Tip Bot account
-- available XRP Tip Bot balance (balance > 0)
-- contacts in your XRP Tip Bot App
-- an Amazon account
-- an Alexa enabled device
-- running Alexa with one of the following locale settings: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
-- japanese, french, spanish and italian are not supported yet
-
-# XRPTipBot-Skill Details
-
-## Checking your balance
-To check your balance, use one of the following commands:
-- "Alexa, ask Tip Bot for my balance."
-- "How many XRP do I have?"
-- "What is my balance?"
-
-## Sending tips to your contacts
-To send a tip to one of your contacts, just say:
-- "Alexa, tell Tip Bot to send a tip to {user_name}"
-- "send a tip"
-- "send a tip to {user_name}"
-- "send 0.01 XRP"
-
-Alexa will then guide you through the dialog for sending a tip to one of your contacts.
-
-IMPORTANT NOTICE:
-Due to some limitations of the Alexa voice service, you are only able to give one piece of information at a time:
-the amount OR the username.
-When providing both, the amount AND the username, alexa will ask you for the username again later in the dialog.
-It is recommended to start the dialog with the username. Alexa will ask your for the amount you want to send afterwards.
-I hope this will be fixed in the future by Amazon.
+- Cuenta XRP Tip Bot 
+- Saldo XRP Tip Bot disponible (saldo > 0)
+- Contactos en tu App XRP Tip Bot 
+- Cuenta Amazon 
+- Un dispositivo Alexa habilitado
+- Utilizar Alexa con una de las siguientes configuraciones regionales: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
 
 
-Have fun and enjoy the Skill!
+# Detalles del XRPTipBot-Skill
 
-Feedback always welcome:
+## Comprobar tu saldo
+Para ver el estado de tu cuenta, usa uno de los siguientes comandos:
+- "Alexa, pregúntale a Tip Bot por mi saldo."
+- "¿Cuántos XRP tengo?"
+- "¿Cuál es mi saldo?"
+
+## Enviar propinas a tus contactos
+Para enviar una propina a uno de tus contactos, sólo tienes que decir:
+- "Alexa, dile a Tip Bot que envíe una propina a {nombre_usuario}"
+- "Enviar una propina"
+- "Enviar una propina a {nombre_usuario}"
+- "Enviar 0.01 XRP"
+
+Alexa te guiará para enviar una propina a unos de tus contactos.
+
+ADVERTENCIA: Debido a algunas limitaciones en el servicio de voz de Alexa, sólo podrás decirle una parte de la información cada vez:
+la cantidad O el usuario de destino.
+Cuando se le dan ambos, la cantidad Y el usuario, Alexa te volverá a preguntar por el nombre de usuario.
+Se recomienda empezar la conversación con el nombre de usuario.
+Alexa te preguntará por la cantidad que deseas enviar más tarde. Espero que Amazon arregle esto en un futuro.
+
+
+¡Diviértete y disfruta del XRPTipBot Skill!
+
+Feedback siempre es bienvenido:
 XRPTipBotAlexa@gmail.com
 
-Disclaimer:
-This skill is not an official product of the XRPTipBot (https://www.xrptipbot.com).
-The skill uses the open API of the XRP TipBot to send tips and to check your balance.
-There is no liability for lost XRP.
-This skill does not store any personal information.
+Disclaimer: Esta herramienta no es un producto oficial del XRPTipBot (https://www.xrptipbot.com).
+La herramienta usa la API accesible del XRP TipBot para enviar propinas y comprobar tu saldo.
+No existe ninguna responsabilidad por la pérdida de XRP.
+Esta herramienta no almacena información personal de ningún tipo.
 
-Build by
+Construido por
 https://twitter.com/nixerFFM
 
-API support:
+Soporte API:
 https://twitter.com/WietseWind
 
-Translation support:
-https://twitter.com/TahiGichigi
+Traducción:
+https://twitter.com/csanz_88
 
-Source: https://github.com/nixer89/xrptipbot-alexa-skill
+Fuent: https://github.com/nixer89/xrptipbot-alexa-skill
 
-Official TipBot-Website: https://www.xrptipbot.com
+TipBot Web Oficial: https://www.xrptipbot.com
 
-# TODO
-- show notification if a tip was sent to you
-- add function to get last user you sent a tip to + amount
+# POR HACER
+- Mostrar una notificación si te llega una propina
+- Añadir una función para tener el último usuario al que enviaste una propina + propina.
