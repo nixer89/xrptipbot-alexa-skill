@@ -1,6 +1,6 @@
 {
   "name": "xrptipbot-alexa-skill",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Alexa skill to send XRP tips to friends",
   "main": "lambda/index.ts",
   "scripts": {
