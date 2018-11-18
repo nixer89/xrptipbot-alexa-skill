@@ -33,7 +33,7 @@ Due to some limitations of the Alexa voice service, you are only able to give on
 the amount OR the username.
 When providing both, the amount AND the username, alexa will ask you for the username again later in the dialog.
 It is recommended to start the dialog with the username. Alexa will ask your for the amount you want to send afterwards.
-I hope this will be fixed in the future by Amazon.
+If Alexa is asking for the username, always start you answer with "search for..." and then the username.
 
 
 Have fun and enjoy the Skill!

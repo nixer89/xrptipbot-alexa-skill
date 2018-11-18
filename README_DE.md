@@ -33,7 +33,7 @@ Aufgrund von Einschränkungen beim Benutzen des Alexa Sprachdienstes kann man nu
 Entweder den Betrag ODER den USER_NAMEN.
 Wenn du den Betrag UND den Usernamen angibst, wird dich Alexa später im Dialog noch einmal nach dem Usernamen fragen.
 Es wird empfohlen, den Dialog mit dem Usernamen zu starten: "sende einen Tipp an 'UserName'."
-Ich hoffe dies wird von Amazon bald gefixt.
+Wenn Alexa nach dem Usernamen fragt, beginne deine Antwort immer mit "Suche nach..." und dann den Usernamen!
 
 Viel Spaß mit dem Skill!
 
