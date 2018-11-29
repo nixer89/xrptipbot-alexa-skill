@@ -1,63 +1,61 @@
-# XRPTipBot-Skill Overview
-The XRPTipBot-Skill lets you check your XRP TipBot balance and send tips to your TipBot contacts within a few seconds. All you need is your voice!
+# Riepilogo XRPTipBot-Skill 
+La XRPTipBot-Skill ti permette di controllare il tuo credito residuo nel XRP TipBot e di inviare mance ai tuoi contatti TipBot in pochi secondi. Il tutto solamente usando la tua voce!
 
-In order to use this skill, you need to have all of the following requirements:
+Per utilizzare questa Skill devono essere rispettati tutti i seguenti requisiti:
+- disponibilità di un account XRP Tip Bot 
+- credito residuo XRP Tip Bot (credito residuo > 0)
+- presenza di contatti nella XRP Tip Bot App
+- disponibilita di un account Amazon 
+- un dispositivo Alexa abilitato
+- Alexa in esecuzione con una dei seguenti impostazioni locali: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
+- giapponese, francese, spagnolo e italiano non sono per ora supportati.
 
-- XRP Tip Bot account
-- available XRP Tip Bot balance (balance > 0)
-- contacts in your XRP Tip Bot App
-- an Amazon account
-- an Alexa enabled device
-- running Alexa with one of the following locale settings: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
-- japanese, french, spanish and italian are not supported yet
+# Dettagli XRPTipBot-Skill 
 
-# XRPTipBot-Skill Details
+## Controllo credito residuo 
+Per controllare il credito residuo utilizzare uno dei seguenti comandi: 
+- "Alexa, chiedi a Tip Bot il mio credito residuo."
+- "Quante XRP ho?"
+- "Quanto è il mio credito residuo?"
 
-## Checking your balance
-To check your balance, use one of the following commands:
-- "Alexa, ask Tip Bot for my balance."
-- "How many XRP do I have?"
-- "What is my balance?"
+## Inviare mance ai tuoi contatti
+Per inviare mance ai tuoi contatti dire:
+- "Alexa, di' a Tip Bot di inviare una mancia a {user_name}"
+- "invia una mancia"
+- "invia una mancia a {user_name}"
+- "invia 0.01 XRP"
 
-## Sending tips to your contacts
-To send a tip to one of your contacts, just say:
-- "Alexa, tell Tip Bot to send a tip to {user_name}"
-- "send a tip"
-- "send a tip to {user_name}"
-- "send 0.01 XRP"
+Alexa ti guidera poi attraverso un dialogo al fine di inviare una mancia ad uno dei tuoi contatti. 
 
-Alexa will then guide you through the dialog for sending a tip to one of your contacts.
-
-IMPORTANT NOTICE:
-Due to some limitations of the Alexa voice service, you are only able to give one piece of information at a time:
-the amount OR the username.
-When providing both, the amount AND the username, alexa will ask you for the username again later in the dialog.
-It is recommended to start the dialog with the username. Alexa will ask your for the amount you want to send afterwards.
-I hope this will be fixed in the future by Amazon.
+Nota importante:
+A cause di alcune limitazioni del sisteme vocale Alexa è possibile fornire solo un'informazione alla volta:
+l'ammontare O il nome del destinatario.
+Se entreambe le informazioni, l'ammontare E il nome del destinatario, vengono fornite contemporaneamente, Alexa richiedrà in seguito il nome del destinatario.
+Si raccomanda di iniziare il dialogo con il nome del destinatario. Alexa ti chiederà in seguito l'ammontare che vuoi inviare.
+Spero che questo problema venga risolto da Amazon al più presto.
 
 
-Have fun and enjoy the Skill!
+Buon divertimento con questa Skill!
 
-Feedback always welcome:
+I feedback sono sempre benenuti:
 XRPTipBotAlexa@gmail.com
 
-Disclaimer:
-This skill is not an official product of the XRPTipBot (https://www.xrptipbot.com).
-The skill uses the open API of the XRP TipBot to send tips and to check your balance.
-There is no liability for lost XRP.
-This skill does not store any personal information.
+Esonero da responsabilità:
+Questa skill non è un prodotto ufficale di XRPTipBot (https://www.xrptipbot.com).
+Questa skill usa l'interfaccia aperta API di XRP TipBot per inviare le mancie e controllare il credito residuo.
+Non siamo responabili per XRP perse.
+Questa skill non raccoglie o memorizza dati personali.
 
-Build by
+Sviluppata da:
 https://twitter.com/nixerFFM
 
-API support:
+Supporto API:
 https://twitter.com/WietseWind
 
-Translation support:
+Supporto per traduzione:
 https://twitter.com/TahiGichigi
 
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
-
 Official TipBot-Website: https://www.xrptipbot.com
 
 # TODO
