@@ -12,6 +12,10 @@ var Long = require('long');
 var german_properties = require('./translations/german/translation_de');
 var english_properties = require('./translations/english/translation_en');
 var japanese_properties = require('./translations/japanese/translation_jp');
+var spanish_properties = require('./translations/spanish/translation_es_ES');
+var mexican_properties = require('./translations/spanish/translation_es_MX');
+var french_properties = require('./translations/french/translation_fr');
+var italian_properties = require('./translations/italian/translation_it');
 var twitter_to_alexa = require("./translations/twitter_to_alexa/translation_twitter_to_alexa");
 
 const BASE_URL = process.env.BASE_URL;
@@ -833,7 +837,15 @@ const languageStrings = {
   'en-CA': english_properties.enCAData(),
   'en-IN': english_properties.enINData(),
   'ja': japanese_properties.jpData(),
-  'ja-JP': japanese_properties.jpJPData()
+  'ja-JP': japanese_properties.jpJPData(),
+  'es': spanish_properties.esData(),
+  'es-ES': spanish_properties.esESData(),
+  'es-MX': mexican_properties.esMXData(),
+  'it': italian_properties.itData(),
+  'it-IT': italian_properties.itITData(),
+  'fr': french_properties.frData(),
+  'fr-FR': french_properties.frFRData()
+  
 };
 
 function invokeBackend(url, options) {

@@ -1,0 +1,187 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "tip bot",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetBalanceIntent",
+                    "slots": [],
+                    "samples": [
+                        "for my XRP balance",
+                        "How many XRP do I have",
+                        "What is my XRP Tip Bot balance",
+                        "What is my balance"
+                    ]
+                },
+                {
+                    "name": "SendTipIntent",
+                    "slots": [
+                        {
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "send some xrp",
+                        "send some x. r. p.",
+                        "send a tip",
+                        "send a donation",
+                        "send a donation to {user_name}",
+                        "send a tip to {user_name}",
+                        "send xrp to {user_name}",
+                        "send x. r. p. to {user_name}",
+                        "send {number_a} point {number_b} {number_c} {number_d} ",
+                        "send {number_a} point {number_b} {number_c} ",
+                        "send {number_a} point {number_b} ",
+                        "send {number_a} dot {number_b} {number_c} {number_d} ",
+                        "send {number_a} dot {number_b} {number_c} ",
+                        "send {number_a} dot {number_b} ",
+                        "send {number_a} ",
+                        "send {number_a} point {number_b} {number_c} {number_d} xrp",
+                        "send {number_a} point {number_b} {number_c} xrp",
+                        "send {number_a} point {number_b} xrp",
+                        "send {number_a} dot {number_b} {number_c} {number_d} xrp",
+                        "send {number_a} dot {number_b} {number_c} xrp",
+                        "send {number_a} dot {number_b} xrp",
+                        "send {number_a} xrp",
+                        "send {number_a} point {number_b} {number_c} {number_d} x. r. p.",
+                        "send {number_a} point {number_b} {number_c} x. r. p.",
+                        "send {number_a} point {number_b} x. r. p.",
+                        "send {number_a} dot {number_b} {number_c} {number_d} x. r. p.",
+                        "send {number_a} dot {number_b} {number_c} x. r. p.",
+                        "send {number_a} dot {number_b} x. r. p.",
+                        "send {number_a} x. r. p.",
+                        "tip some xrp",
+                        "tip x. r. p.",
+                        "tip to {user_name}",
+                        "tip xrp to {user_name}",
+                        "tip x. r. p. to {user_name}",
+                        "tip {number_a} point {number_b} {number_c} {number_d} ",
+                        "tip {number_a} point {number_b} {number_c} ",
+                        "tip {number_a} point {number_b} ",
+                        "tip {number_a} dot {number_b} {number_c} {number_d} ",
+                        "tip {number_a} dot {number_b} {number_c} ",
+                        "tip {number_a} dot {number_b} ",
+                        "tip {number_a} ",
+                        "tip {number_a} point {number_b} {number_c} {number_d} xrp",
+                        "tip {number_a} point {number_b} {number_c} xrp",
+                        "tip {number_a} point {number_b} xrp",
+                        "tip {number_a} dot {number_b} {number_c} {number_d} xrp",
+                        "tip {number_a} dot {number_b} {number_c} xrp",
+                        "tip {number_a} dot {number_b} xrp",
+                        "tip {number_a} xrp",
+                        "tip {number_a} point {number_b} {number_c} {number_d} x. r. p.",
+                        "tip {number_a} point {number_b} {number_c} x. r. p.",
+                        "tip {number_a} point {number_b} x. r. p.",
+                        "tip {number_a} dot {number_b} {number_c} {number_d} x. r. p.",
+                        "tip {number_a} dot {number_b} {number_c} x. r. p.",
+                        "tip {number_a} dot {number_b} x. r. p.",
+                        "tip {number_a} x. r. p."
+                    ]
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AmountIntent",
+                    "slots": [
+                        {
+                            "name": "number_a",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_b",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_c",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "number_d",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "{number_a} point {number_b} {number_c} {number_d} ",
+                        "{number_a} point {number_b} {number_c} ",
+                        "{number_a} point {number_b} ",
+                        "{number_a} dot {number_b} {number_c} {number_d} ",
+                        "{number_a} dot {number_b} {number_c} ",
+                        "{number_a} dot {number_b} ",
+                        "{number_a}",
+                        "{number_a} point {number_b} {number_c} {number_d} xrp",
+                        "{number_a} point {number_b} {number_c} xrp",
+                        "{number_a} point {number_b} xrp",
+                        "{number_a} dot {number_b} {number_c} {number_d} xrp",
+                        "{number_a} dot {number_b} {number_c} xrp",
+                        "{number_a} dot {number_b} xrp",
+                        "{number_a} xrp ",
+                        "{number_a} point {number_b} {number_c} {number_d} x. r. p.",
+                        "{number_a} point {number_b} {number_c} x. r. p.",
+                        "{number_a} point {number_b} x. r. p.",
+                        "{number_a} dot {number_b} {number_c} {number_d} x. r. p.",
+                        "{number_a} dot {number_b} {number_c} x. r. p.",
+                        "{number_a} dot {number_b} x. r. p.",
+                        "{number_a} x. r. p."
+                    ]
+                },
+                {
+                    "name": "UserNameIntent",
+                    "slots": [
+                        {
+                            "name": "user_name",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "search for {user_name}",
+                        "look for {user_name}",
+                        "check for {user_name}",
+                        "search for user {user_name}",
+                        "look for user {user_name}",
+                        "check for user {user_name}"
+                    ]
+                }
+            ],
+            "types": []
+        }
+    }
+}

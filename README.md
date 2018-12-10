@@ -8,8 +8,6 @@ In order to use this skill, you need to have all of the following requirements:
 - contacts in your XRP Tip Bot App
 - an Amazon account
 - an Alexa enabled device
-- running Alexa with one of the following locale settings: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
-- japanese, french, spanish and italian are not supported yet
 
 # XRPTipBot-Skill Details
 
