@@ -54,7 +54,9 @@ API support:
 https://twitter.com/WietseWind
 
 Translation support:
-https://twitter.com/TahiGichigi
+https://twitter.com/bitbit_ojin
+https://twitter.com/kcool081003
+
 
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
 
