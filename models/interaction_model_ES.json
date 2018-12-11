@@ -23,10 +23,11 @@
                     "name": "GetBalanceIntent",
                     "slots": [],
                     "samples": [
-                        "Mi saldo XRP",
-                        "Cuántos XRP tengo",
-                        "Cuál es mi saldo XRP Tip Bot",
-                        "Cuál es mi saldo"
+                        "mi saldo",
+                        "mi saldo XRP",
+                        "cuántos XRP tengo",
+                        "cuál es mi saldo XRP Tip Bot",
+                        "cuál es mi saldo"
                     ]
                 },
                 {

@@ -378,8 +378,10 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
       if(amount <= 20) { //make sure to not send too much in testing! 
         console.log("amount is valid");
         if(await isReachable(BASE_URL)) {
+          console.log("host is reachable, sending tip");
           var sendTipResponse = await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
+          console.log("got response from sending tip: " + JSON.stringify(sendTipResponse));
           var speechOutput = await handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
           return handlerInput.responseBuilder
             .speak(speechOutput)
@@ -411,6 +413,7 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
 async function handleSentTipResponse(handlerInput, response, amount, username) {
   const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
   var locale = handlerInput.requestEnvelope.request.locale;
+  console.log("locale is: " + locale);
 
   if(response && response.data && response.data.code) {
     switch(response.data.code) {
@@ -562,11 +565,11 @@ async function handleUser(handlerInput) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
           possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
-          console.log("start getting distance");
+          //console.log("start getting distance");
           //possibleUsers.forEach(user => { user.distance = eudex.distance(user_slot.value.toLowerCase(),user.s.toLowerCase())});
-          console.log("end getting distance");
+          //console.log("end getting distance");
           possibleUsers.sort((userA, userB) => userA.distance - userB.distance);
-          console.log("possible users sorted with eudex distance: " + JSON.stringify(possibleUsers));
+          console.log("possible users sorted with levenshtein distance: " + JSON.stringify(possibleUsers));
 
           //var possibleUsersSim = userinfo.data;
           //possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_slot.value.toLowerCase()));

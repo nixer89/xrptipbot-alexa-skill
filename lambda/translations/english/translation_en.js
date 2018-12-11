@@ -1,7 +1,7 @@
 const enData = {
     translation: {
       SKILL_NAME: 'XRP Tip Bot',
-      WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to you contacts. What can I help you with? ',
+      WELCOME_MESSAGE: 'Welcome to the XRP Tip Bot Skill. Here you can check your balance or send tips to your contacts. What can I help you with? ',
       ACCOUNT_LINKING: 'You need to link your account first. Please open the Alexa companion app to link your account. ',
       ACCOUNT_BALANCE: 'Your XRP Tip Bot balance is: %(amount)s XRP. What can I help you with? ',
       ASK_FOR_AMOUNT: 'How many XRP do you want to send? ',
