@@ -54,10 +54,7 @@ https://twitter.com/WietseWind
 Traducción:
 https://twitter.com/csanz_88
 
+
 Fuent: https://github.com/nixer89/xrptipbot-alexa-skill
 
 TipBot Web Oficial: https://www.xrptipbot.com
-
-# POR HACER
-- Mostrar una notificación si te llega una propina
-- Añadir una función para tener el último usuario al que enviaste una propina + propina.

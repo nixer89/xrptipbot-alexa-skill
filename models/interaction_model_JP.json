@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "tipbot",
+            "invocationName": "チップ",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",

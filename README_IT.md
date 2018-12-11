@@ -55,9 +55,6 @@ https://twitter.com/WietseWind
 Supporto per traduzione:
 https://twitter.com/CavallariErik
 
+
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
 Official TipBot-Website: https://www.xrptipbot.com
-
-# TODO
-- show notification if a tip was sent to you
-- add function to get last user you sent a tip to + amount
