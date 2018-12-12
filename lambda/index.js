@@ -382,10 +382,18 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
           var sendTipResponse = await invokeBackend(BASE_URL+"/action:tip/", {method: "POST", body: JSON.stringify({"token": accessToken, "amount": amount, "to":"xrptipbot://"+user.n+"/"+user.u})});
 
           console.log("got response from sending tip: " + JSON.stringify(sendTipResponse));
-          var speechOutput = await handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
-          return handlerInput.responseBuilder
-            .speak(speechOutput)
-            .getResponse();
+          if(sendTipResponse && !sendTipResponse.error) {
+            var speechOutput = await handleSentTipResponse(handlerInput, sendTipResponse, amount, user.s);
+            return handlerInput.responseBuilder
+              .speak(speechOutput)
+              .getResponse();
+          } else if (sendTipResponse && sendTipResponse.error) {
+            //seems like we have an invalid access token
+            return handlerInput.responseBuilder
+              .speak(requestAttributes.t('ACCOUNT_LINKING'))
+              .withLinkAccountCard()
+              .getResponse();
+          }
         } else {
           console.log(BASE_URL + " cannot be reached!");
           return handlerInput.responseBuilder
@@ -580,14 +588,12 @@ async function handleUser(handlerInput) {
           handlerInput.attributesManager.setSessionAttributes(attributes);
           console.log("attributes set, returning check of next user");
           return {checkNextUser: true, speechOutput: ""};
-        } else {
-          return {checkNextUser: false, speechOutput: requestAttributes.t('NO_USER_FOUND')};
+        } else if (userinfo && userinfo.error) {
+          return {checkNextUser: false, speechOutput: requestAttributes.t('ACCOUNT_LINKING'), withAccountCard: true}
         }
       } else {
         console.log(BASE_URL + " cannot be reached!");
-        return handlerInput.responseBuilder
-          .speak(requestAttributes.t('API_NOT_AVAILABLE'))
-          .getResponse();
+        return {checkNextUser: false, speechOutput: requestAttributes.t('API_NOT_AVAILABLE')}
       }
     } else {
       return {checkNextUser: false, speechOutput: requestAttributes.t('ERROR_MESSAGE')};
