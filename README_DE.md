@@ -1,4 +1,3 @@
-# XRPTipBot-Skill Overview
 Mit dem XRPTipBot-Skill kannst du deinen TipBot-Kontostand abfragen oder Tips an deine Kontakte senden! Alles was du brauchst ist deine Stimme!
 
 Um diesen Skill nutzen zu können, benötigst du folgende Vorraussetzungen:
@@ -8,19 +7,14 @@ Um diesen Skill nutzen zu können, benötigst du folgende Vorraussetzungen:
 - Kontakte in deiner XRP Tip Bot App
 - einen Amazon Account
 - ein Alexa fähiges Gerät
-- Alexa muss mit eine der folgenden Sprachen eingestellt sein: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
-- japanisch, französisch, spanisch und italienisch werden noch nicht unterstützt
 
-# XRPTipBot-Skill Details
 
-## Abfrage des Kontostandes
 Um deinen XRPTipBot Kontostand abzufragen, kannst du folgende Befehle nutzen:
 - "Alexa, frage Tip Bot nach meinen XRP."
 - "Alexa, frage Tip Bot nach meinem Kontostand."
 - "Wie viele XRP habe ich?"
 - "Wie ist mein Kontostand?"
 
-## Einen Tip an einen Freund senden
 Um XRP-Tips an einen deiner Kontakte zu senden, kannst du einfach sagen:
 - "sende XRP"
 - "sende XPR an 'UserName'"

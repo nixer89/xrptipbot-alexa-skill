@@ -1,4 +1,3 @@
-# Visión General del XRPTipBot-Skill 
 El XRPTipBot-Skill te permite comprobar tu saldo en XRP TipBot y enviar propinas a tus contactos de tu lista TipBot en unos pocos segundos. ¡Sólo usando tu voz!
 
 Para poder usar esta herramienta, debes cumplir los siguientes requisitos:
@@ -8,18 +7,13 @@ Para poder usar esta herramienta, debes cumplir los siguientes requisitos:
 - Contactos en tu App XRP Tip Bot 
 - Cuenta Amazon 
 - Un dispositivo Alexa habilitado
-- Utilizar Alexa con una de las siguientes configuraciones regionales: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
 
 
-# Detalles del XRPTipBot-Skill
-
-## Comprobar tu saldo
 Para ver el estado de tu cuenta, usa uno de los siguientes comandos:
 - "Alexa, pregúntale a Tip Bot por mi saldo."
 - "¿Cuántos XRP tengo?"
 - "¿Cuál es mi saldo?"
 
-## Enviar propinas a tus contactos
 Para enviar una propina a uno de tus contactos, sólo tienes que decir:
 - "Alexa, dile a Tip Bot que envíe una propina a {nombre_usuario}"
 - "Enviar una propina"
@@ -56,5 +50,4 @@ https://twitter.com/csanz_88
 
 
 Fuent: https://github.com/nixer89/xrptipbot-alexa-skill
-
 TipBot Web Oficial: https://www.xrptipbot.com

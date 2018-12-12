@@ -1,4 +1,3 @@
-# XRPTipBot-Skill Overview
 The XRPTipBot-Skill lets you check your XRP TipBot balance and send tips to your TipBot contacts within a few seconds. All you need is your voice!
 
 In order to use this skill, you need to have all of the following requirements:
@@ -8,18 +7,13 @@ In order to use this skill, you need to have all of the following requirements:
 - contacts in your XRP Tip Bot App
 - an Amazon account
 - an Alexa enabled device
-- running Alexa with one of the following locale settings: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
-- japanese, french, spanish and italian are not supported yet
 
-# XRPTipBot-Skill Details
 
-## Checking your balance
 To check your balance, use one of the following commands:
 - "Alexa, ask Tip Bot for my balance."
 - "How many XRP do I have?"
 - "What is my balance?"
 
-## Sending tips to your contacts
 To send a tip to one of your contacts, just say:
 - "Alexa, tell Tip Bot to send a tip to {user_name}"
 - "send a tip"
@@ -57,5 +51,4 @@ Translation support:
 
 
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
-
 Official TipBot-Website: https://www.xrptipbot.com

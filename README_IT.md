@@ -1,4 +1,3 @@
-# Riepilogo XRPTipBot-Skill 
 La XRPTipBot-Skill ti permette di controllare il tuo credito residuo nel XRP TipBot e di inviare mance ai tuoi contatti TipBot in pochi secondi. Il tutto solamente usando la tua voce!
 
 Per utilizzare questa Skill devono essere rispettati tutti i seguenti requisiti:
@@ -10,15 +9,12 @@ Per utilizzare questa Skill devono essere rispettati tutti i seguenti requisiti:
 - Alexa in esecuzione con una dei seguenti impostazioni locali: de-DE, en-US, en-CA, en-IN, en-GB, en-AU
 - giapponese, francese, spagnolo e italiano non sono per ora supportati.
 
-# Dettagli XRPTipBot-Skill 
 
-## Controllo credito residuo 
 Per controllare il credito residuo utilizzare uno dei seguenti comandi: 
 - "Alexa, chiedi a Tip Bot il mio credito residuo."
 - "Quante XRP ho?"
 - "Quanto è il mio credito residuo?"
 
-## Inviare mance ai tuoi contatti
 Per inviare mance ai tuoi contatti dire:
 - "Alexa, di' a Tip Bot di inviare una mancia a {user_name}"
 - "invia una mancia"
