@@ -122,7 +122,7 @@
                     "samples": [
                         "{number_a} punto {number_b} {number_c} {number_d} ",
                         "{number_a} punto {number_b} {number_c} ",
-                        "{number_a} point {number_b} ",
+                        "{number_a} punto {number_b} ",
                         "{number_a}",
                         "{number_a} punto {number_b} {number_c} {number_d} xrp",
                         "{number_a} punto {number_b} {number_c} xrp",
@@ -130,7 +130,7 @@
                         "{number_a} xrp ",
                         "{number_a} punto {number_b} {number_c} {number_d} x. r. p.",
                         "{number_a} punto {number_b} {number_c} x. r. p.",
-                        "{number_a} point {number_b} x. r. p.",
+                        "{number_a} punto {number_b} x. r. p.",
                         "{number_a} x. r. p."
                     ]
                 },
