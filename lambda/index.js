@@ -569,7 +569,7 @@ async function handleUser(handlerInput) {
       if(await isReachable(BASE_URL)) {    
         let userinfo = await invokeBackend(BASE_URL+"/action:contacts/", {method: "POST", body: JSON.stringify({token: accessToken})});
         console.log("userinfo: " + JSON.stringify(userinfo));
-        if(userinfo && !userinfo.error && userinfo.data && userinfo.data.length > 0) {
+        if(!userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
           possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
@@ -588,7 +588,9 @@ async function handleUser(handlerInput) {
           handlerInput.attributesManager.setSessionAttributes(attributes);
           console.log("attributes set, returning check of next user");
           return {checkNextUser: true, speechOutput: ""};
-        } else if (userinfo && userinfo.error) {
+        } else if (!userinfo.error) {
+          return {checkNextUser: false, speechOutput: requestAttributes.t('NO_USER_FOUND')};
+        } else {
           return {checkNextUser: false, speechOutput: requestAttributes.t('ACCOUNT_LINKING'), withAccountCard: true}
         }
       } else {
