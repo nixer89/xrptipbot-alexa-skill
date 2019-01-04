@@ -1,6 +1,6 @@
 ﻿start tipbot:
 
-tipbotを起動して
+チップボットを起動して
 
 ask for balance:
 
