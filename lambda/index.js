@@ -7,6 +7,14 @@ var isReachable = require('is-reachable');
 var levenshtein = require('fast-levenshtein');
 var eudex = require('talisman/metrics/distance/eudex');
 var Long = require('long');
+const {Translate} = require('@google-cloud/translate');
+
+// Instantiates a client
+const translate = new Translate({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  key: process.env.GOOGLE_API_KEY
+});
+
 
 //language properties
 var german_properties = require('./translations/german/translation_de');
@@ -564,6 +572,9 @@ async function handleUser(handlerInput) {
     return {checkNextUser: false, speechOutput: output, reprompt:true, withAccountCard: false}
   }
 
+  let user_name = await translateUserName(handlerInput.requestEnvelope.request.locale, user_slot.value);
+  console.log('user_name=' + user_name);
+
   try {
     if(!attributes.possibleUsers) {
       if(await isReachable(BASE_URL)) {    
@@ -572,15 +583,15 @@ async function handleUser(handlerInput) {
         if(!userinfo.error && userinfo.data && userinfo.data.length > 0) {
           //compare with levenshtein and sort by lowest distance
           var possibleUsers = userinfo.data;
-          possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          possibleUsers.forEach(user => user.distance = levenshtein.get(user.s.toLowerCase(), user_name.toLowerCase()));
           //console.log("start getting distance");
-          //possibleUsers.forEach(user => { user.distance = eudex.distance(user_slot.value.toLowerCase(),user.s.toLowerCase())});
+          //possibleUsers.forEach(user => { user.distance = eudex.distance(user_name.toLowerCase(),user.s.toLowerCase())});
           //console.log("end getting distance");
           possibleUsers.sort((userA, userB) => userA.distance - userB.distance);
           console.log("possible users sorted with levenshtein distance: " + JSON.stringify(possibleUsers));
 
           //var possibleUsersSim = userinfo.data;
-          //possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_slot.value.toLowerCase()));
+          //possibleUsersSim.forEach(user => user.levenshtein = stringSimilarity.compareTwoStrings(user.s.toLowerCase(), user_name.toLowerCase()));
           //possibleUsersSim.sort((userA, userB) => userA.levenshtein - userB.levenshtein);
           //console.log("possible users sorted with stringSimilarity: " + JSON.stringify(possibleUsersSim));
 
@@ -866,4 +877,21 @@ function invokeBackend(url, options) {
   };
 
   return fetch(url, options).then(res => res.json());
+}
+
+async function translateUserName(locale, text) {
+  if('ja'===locale || 'ja-JP'===locale) {
+    try {
+      //try to translate japanese to latin
+      console.log("input text: " + text);
+      let translations = await translate.translate(text, 'en');
+      console.log("translation: " + JSON.stringify(translations));
+      return translations[0];
+    } catch(err) {
+      console.log("error when translating.");
+      console.log(err);
+    }
+  }
+  
+  return text;
 }
