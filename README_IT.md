@@ -50,6 +50,7 @@ https://twitter.com/WietseWind
 
 Supporto per traduzione:
 https://twitter.com/CavallariErik
+https://twitter.com/SaraCee_T9N
 
 
 Source: https://github.com/nixer89/xrptipbot-alexa-skill
