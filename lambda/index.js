@@ -375,7 +375,7 @@ async function sendTipViaTipBot(handlerInput, amount, user) {
     if(amount && user) {
       console.log("We have an amount and user");
       //found single user -> repromt to send
-      if(amount <= 20) { //make sure to not send too much in testing! 
+      if(amount <= 400) { //make sure to not send too much in testing! 
         console.log("amount is valid");
         if(await isReachable(BASE_URL)) {
           console.log("host is reachable, sending tip");
@@ -518,7 +518,7 @@ function handleAmount(handlerInput) {
       handlerInput.attributesManager.setSessionAttributes(attributes);
     //} else if(new Number(wholeNumber) <= 0.001) {
     //  speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_MIN') + requestAttributes.t('ASK_FOR_AMOUNT');
-    }  else if(new Number(wholeNumber) > 20) {
+    }  else if(new Number(wholeNumber) > 400) {
       speechOutput = requestAttributes.t('ASK_FOR_AMOUNT_MAX') + requestAttributes.t('ASK_FOR_AMOUNT');
       attributes.dialogState = DIALOG_STATE.AMOUNT_SELECTION;
       attributes.lastQuestion = speechOutput;
